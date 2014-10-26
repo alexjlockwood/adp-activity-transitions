@@ -154,7 +154,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
             observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
-                    observer.removeOnPreDrawListener(this);
+                    getActivity().getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
                     getActivity().startPostponedEnterTransition();
                     return true;
                 }
