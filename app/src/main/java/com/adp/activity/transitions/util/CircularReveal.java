@@ -14,36 +14,21 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 
 public class CircularReveal extends Visibility {
-    private static final String VALUES_LOCATION_ON_SCREEN = "values_location_on_screen";
-
     private final Rect mStartBounds = new Rect();
+    private final int[] mTmpLoc = new int[2];
 
     public CircularReveal(View view) {
        setStartView(view);
     }
 
+    /**
+     * Used to explicitly set the start of the circular reveal.
+     *
+     * TODO: can this be less hacky?
+     */
     public void setStartView(View view) {
-        final int[] loc = new int[2];
-        view.getLocationInWindow(loc);
-        mStartBounds.set(loc[0], loc[1], loc[0] + view.getWidth(), loc[1] + view.getHeight());
-    }
-
-    @Override
-    public void captureStartValues(TransitionValues transitionValues) {
-        super.captureStartValues(transitionValues);
-        captureValues(transitionValues);
-    }
-
-    @Override
-    public void captureEndValues(TransitionValues transitionValues) {
-        super.captureEndValues(transitionValues);
-        captureValues(transitionValues);
-    }
-
-    private void captureValues(TransitionValues transitionValues) {
-        final int[] location = new int[2];
-        transitionValues.view.getLocationOnScreen(location);
-        transitionValues.values.put(VALUES_LOCATION_ON_SCREEN, location);
+        view.getLocationInWindow(mTmpLoc);
+        mStartBounds.set(mTmpLoc[0], mTmpLoc[1], mTmpLoc[0] + view.getWidth(), mTmpLoc[1] + view.getHeight());
     }
 
     private float getCenterX(View view) {
@@ -56,12 +41,10 @@ public class CircularReveal extends Visibility {
 
     @Override
     public Animator onAppear(ViewGroup sceneRoot, final View view, TransitionValues startValues, TransitionValues endValues) {
+        if (endValues == null) {
+            return null;
+        }
         return createAnimation(view, getCenterX(view), getCenterY(view), view.getTranslationX(), view.getTranslationY(), true);
-    }
-
-    @Override
-    public Animator onDisappear(ViewGroup sceneRoot, final View view, TransitionValues startValues, TransitionValues endValues) {
-        return createAnimation(view, view.getTranslationX(), view.getTranslationY(), getCenterX(view), getCenterY(view), false);
     }
 
     private Animator createAnimation(final View view, float startX, float startY, float endX, float endY, final boolean isExpanding) {
@@ -92,8 +75,6 @@ public class CircularReveal extends Visibility {
         float endRadius = isExpanding ? fullRadius : 0f;
         float startRadius = isExpanding ? 0f : fullRadius;
         Animator animator = ViewAnimationUtils.createCircularReveal(view, width / 2, height / 2, startRadius, endRadius);
-
-        // Workaround b/17541275 by wrapping this animator in a NoPauseAnimatorWrapper.
         return new NoPauseAnimatorWrapper(animator);
     }
 }

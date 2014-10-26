@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import java.util.List;
@@ -37,6 +38,8 @@ public class MainActivity extends Activity {
                 final int oldPosition = mTmpState.getInt(EXTRA_OLD_ITEM_POSITION);
                 final int currentPosition = mTmpState.getInt(EXTRA_CURRENT_ITEM_POSITION);
                 if (currentPosition != oldPosition) {
+                    // Then the user must have swiped to a different page in the DetailsActivity.
+                    // We must update the shared element so that the correct one falls into place.
                     final String newTransitionName = CAPTIONS[currentPosition];
                     final View newSharedView =  mRecyclerView.findViewWithTag(newTransitionName);
                     names.clear();
@@ -51,10 +54,19 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        postponeEnterTransition();
         setContentView(R.layout.activity_main);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, getResources().getInteger(R.integer.num_columns)));
         mRecyclerView.setAdapter(new MyAdapter());
+        getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
+                startPostponedEnterTransition();
+                return true;
+            }
+        });
         setExitSharedElementCallback(mCallback);
     }
 

@@ -11,6 +11,7 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
 import android.transition.Slide;
 import android.transition.Transition;
 import android.transition.TransitionSet;
@@ -54,23 +55,17 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
                 final View sharedView = mAdapter.getCurrentPageFragment().getSharedView();
                 names.add(sharedView.getTransitionName());
                 sharedElements.put(sharedView.getTransitionName(), sharedView);
-
-                // TODO: figure out how to animate the circular reveal back into its correct place if the shared element is remapped.
             }
         }
 
         @Override
-        public void onRejectSharedElements(List<View> rejectedSharedElements) {
-            LOG("onMapSharedElements(List<String>, Map<String, View>)", mIsFinishing);
-        }
-
-        @Override
         public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-            LOG("onSharedElementStart(List<String>, List<View>, List<View>", mIsFinishing);
+            LOG("onSharedElementStart(List<String>, List<View>, List<View>)", mIsFinishing);
             if (!mIsFinishing) {
+                // Create the enter transition.
                 final TransitionSet enterTransition = new TransitionSet();
                 enterTransition.addTransition(makeReveal(sharedElements.get(0)));
-                enterTransition.addTransition(makeSlide());
+                enterTransition.addTransition(makeCardSlide());
                 enterTransition.setOrdering(TransitionSet.ORDERING_TOGETHER);
                 getWindow().setEnterTransition(enterTransition);
             }
@@ -78,7 +73,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
 
         @Override
         public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-            LOG("onSharedElementEnd(List<String>, List<View>, List<View>", mIsFinishing);
+            LOG("onSharedElementEnd(List<String>, List<View>, List<View>)", mIsFinishing);
         }
     };
 
@@ -88,18 +83,36 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         return reveal;
     }
 
-    private static Transition makeSlide() {
+    private static Transition makeRevealContainerSlide() {
+        final TransitionSet transitionSet = new TransitionSet();
+        final Transition slide = new Slide(Gravity.TOP);
+        slide.addTarget(R.id.reveal_container);  // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        transitionSet.addTransition(slide);
+        final Transition fade = new Fade();
+        fade.addTarget(R.id.reveal_container);
+        transitionSet.addTransition(fade);
+        transitionSet.setOrdering(TransitionSet.ORDERING_TOGETHER);
+        return transitionSet;
+    }
+
+    private static Transition makeCardSlide() {
         final Transition slide = new Slide(Gravity.BOTTOM);
         slide.addTarget(R.id.card_view); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
-        slide.excludeTarget(R.id.reveal_container, true);
         return slide;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
         postponeEnterTransition();
+        setContentView(R.layout.activity_details);
+
+        // Create the return transition.
+        final TransitionSet returnTransition = new TransitionSet();
+        returnTransition.addTransition(makeRevealContainerSlide());
+        returnTransition.addTransition(makeCardSlide());
+        returnTransition.setOrdering(TransitionSet.ORDERING_TOGETHER);
+        getWindow().setReturnTransition(returnTransition);
 
         if (savedInstanceState == null) {
             mCurrentItemPosition = getIntent().getExtras().getInt(EXTRA_CURRENT_ITEM_POSITION);
@@ -108,8 +121,8 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
             mCurrentItemPosition = savedInstanceState.getInt(STATE_CURRENT_ITEM_POSITION);
             mOldItemPosition = savedInstanceState.getInt(STATE_OLD_ITEM_POSITION);
         }
-        mAdapter = new CurrentPageFragmentAdapter(getFragmentManager());
 
+        mAdapter = new CurrentPageFragmentAdapter(getFragmentManager());
         final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(mAdapter);
         pager.setOnPageChangeListener(this);
@@ -129,7 +142,6 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
 
         private View mSharedView;
-        private View mRevealContainer;
 
         public static PageFragment newInstance(int position) {
             final Bundle args = new Bundle();
@@ -143,7 +155,6 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.fragment_details, container, false);
             final int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
-            mRevealContainer = rootView.findViewById(R.id.reveal_container);
             mSharedView = rootView.findViewById(R.id.details_view);
             mSharedView.setBackgroundColor(COLORS[selectedPosition]);
             mSharedView.setTransitionName(CAPTIONS[selectedPosition]);
@@ -160,10 +171,6 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
                 }
             });
             return rootView;
-        }
-
-        public View getRevealContainer() {
-            return mRevealContainer;
         }
 
         public View getSharedView() {
