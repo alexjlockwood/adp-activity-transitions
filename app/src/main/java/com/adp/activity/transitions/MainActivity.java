@@ -24,49 +24,62 @@ public class MainActivity extends Activity {
 
     static final String EXTRA_CURRENT_ITEM_POSITION = "extra_current_item_position";
     static final String EXTRA_OLD_ITEM_POSITION = "extra_old_item_position";
-    static final int[] COLORS = {Color.RED, Color.GREEN, Color.BLUE, Color.CYAN, Color.YELLOW, Color.GRAY,};
-    static final String[] CAPTIONS = {"Red", "Green", "Blue", "Cyan", "Yellow", "Gray",};
+    static final int[] COLORS = {Color.RED, Color.GREEN, Color.BLUE, Color.DKGRAY, Color.CYAN, Color.YELLOW, Color.LTGRAY, Color.MAGENTA, Color.WHITE};
+    static final String[] CAPTIONS = {"Red", "Green", "Blue", "Dark Gray", "Cyan", "Yellow", "Light Gray", "Magenta" , "White"};
 
     private RecyclerView mRecyclerView;
     private Bundle mTmpState;
+    private boolean mIsReentering;
 
     private final SharedElementCallback mCallback = new SharedElementCallback() {
+
+        @Override
+        public void onRejectSharedElements(List<View> rejectedSharedElements) {
+            LOG("onMapSharedElements(List<View>)", mIsReentering);
+        }
+
         @Override
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-            LOG("onMapSharedElements(List<String>, Map<String, View>)");
+            LOG("onMapSharedElements(List<String>, Map<String, View>)", mIsReentering);
             if (mTmpState != null) {
                 final int oldPosition = mTmpState.getInt(EXTRA_OLD_ITEM_POSITION);
                 final int currentPosition = mTmpState.getInt(EXTRA_CURRENT_ITEM_POSITION);
                 if (currentPosition != oldPosition) {
-                    // Then the user must have swiped to a different page in the DetailsActivity.
-                    // We must update the shared element so that the correct one falls into place.
+                    // If currentPosition != oldPosition the user must have swiped to a different
+                    // page in the DetailsActivity. We must update the shared element so that the
+                    // correct one falls into place.
                     final String newTransitionName = CAPTIONS[currentPosition];
                     final View newSharedView =  mRecyclerView.findViewWithTag(newTransitionName);
                     names.clear();
                     names.add(newTransitionName);
-                    sharedElements.clear();
-                    sharedElements.put(newTransitionName, newSharedView);
+                    if (newSharedView != null) {
+                        names.clear();
+                        names.add(newTransitionName);
+                        sharedElements.clear();
+                        sharedElements.put(newTransitionName, newSharedView);
+                    }
                 }
             }
+        }
+
+        @Override
+        public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+            LOG("onSharedElementStart(List<String>, List<View>, List<View>)", mIsReentering);
+        }
+
+        @Override
+        public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+            LOG("onSharedElementEnd(List<String>, List<View>, List<View>)", mIsReentering);
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        postponeEnterTransition();
         setContentView(R.layout.activity_main);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, getResources().getInteger(R.integer.num_columns)));
         mRecyclerView.setAdapter(new MyAdapter());
-        getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
-                startPostponedEnterTransition();
-                return true;
-            }
-        });
         setExitSharedElementCallback(mCallback);
     }
 
@@ -109,7 +122,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onClick(View v) {
-            LOG("startActivity(Intent, Bundle)");
+            LOG("startActivity(Intent, Bundle)", mIsReentering);
             final Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
             intent.putExtra(EXTRA_CURRENT_ITEM_POSITION, mPosition);
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(
@@ -119,22 +132,34 @@ public class MainActivity extends Activity {
 
     @Override
     public void onActivityReenter(int requestCode, Intent data) {
-        LOG("onActivityReenter(int, Intent)");
+        mIsReentering = true;
+        LOG("onActivityReenter(int, Intent)", true);
         super.onActivityReenter(requestCode, data);
         if (data != null && data.getExtras() != null) {
             mTmpState = new Bundle(data.getExtras());
+            mRecyclerView.scrollToPosition(mTmpState.getInt(EXTRA_CURRENT_ITEM_POSITION));
         }
+        postponeEnterTransition();
+        mRecyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mRecyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                startPostponedEnterTransition();
+                return true;
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mTmpState = null;
+        mIsReentering = false;
     }
 
-    private static void LOG(String message) {
+    private static void LOG(String message, boolean isReentering) {
         if (DEBUG) {
-            Log.i(TAG, message);
+            Log.i(TAG, String.format("%s: %s", isReentering ? "REENTERING" : "EXITING", message));
         }
     }
 }

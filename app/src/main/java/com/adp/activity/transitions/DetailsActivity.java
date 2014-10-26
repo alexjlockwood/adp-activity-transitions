@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.SharedElementCallback;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -43,13 +44,13 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
     private CurrentPageFragmentAdapter mAdapter;
     private int mOldItemPosition;
     private int mCurrentItemPosition;
-    private boolean mIsFinishing;
+    private boolean mIsReturning;
 
     private final SharedElementCallback mCallback = new SharedElementCallback() {
         @Override
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-            LOG("onMapSharedElements(List<String>, Map<String, View>)", mIsFinishing);
-            if (mIsFinishing && mCurrentItemPosition != mOldItemPosition) {
+            LOG("onMapSharedElements(List<String>, Map<String, View>)", mIsReturning);
+            if (mIsReturning && mCurrentItemPosition != mOldItemPosition) {
                 names.clear();
                 sharedElements.clear();
                 final View sharedView = mAdapter.getCurrentPageFragment().getSharedView();
@@ -59,9 +60,14 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         }
 
         @Override
+        public void onRejectSharedElements(List<View> rejectedSharedElements) {
+            LOG("onMapSharedElements(List<View>)", mIsReturning);
+        }
+
+        @Override
         public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-            LOG("onSharedElementStart(List<String>, List<View>, List<View>)", mIsFinishing);
-            if (!mIsFinishing) {
+            LOG("onSharedElementStart(List<String>, List<View>, List<View>)", mIsReturning);
+            if (!mIsReturning) {
                 // Create the enter transition.
                 final TransitionSet enterTransition = new TransitionSet();
                 enterTransition.addTransition(makeReveal(sharedElements.get(0)));
@@ -73,7 +79,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
 
         @Override
         public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-            LOG("onSharedElementEnd(List<String>, List<View>, List<View>)", mIsFinishing);
+            LOG("onSharedElementEnd(List<String>, List<View>, List<View>)", mIsReturning);
         }
     };
 
@@ -86,7 +92,8 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
     private static Transition makeRevealContainerSlide() {
         final TransitionSet transitionSet = new TransitionSet();
         final Transition slide = new Slide(Gravity.TOP);
-        slide.addTarget(R.id.reveal_container);  // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        slide.addTarget(R.id.reveal_container); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        slide.addTarget(R.id.details_view);
         transitionSet.addTransition(slide);
         final Transition fade = new Fade();
         fade.addTarget(R.id.reveal_container);
@@ -206,8 +213,8 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
             }
 
             public void bind(int position) {
-                mView.setBackgroundColor(COLORS[position]);
-                mTextView.setText(CAPTIONS[position]);
+                mView.setBackgroundColor(Color.GRAY);
+                mTextView.setText("Sample card #" + (position + 1));
             }
         }
     }
@@ -244,20 +251,16 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
     public void finishAfterTransition() {
         LOG("finishAfterTransition()");
         final Intent data = new Intent();
-        final int oldPosition = getIntent().getIntExtra(EXTRA_CURRENT_ITEM_POSITION, 0);
-        final int currentPosition = mCurrentItemPosition;
-        data.putExtra(EXTRA_OLD_ITEM_POSITION, oldPosition);
-        data.putExtra(EXTRA_CURRENT_ITEM_POSITION, currentPosition);
+        data.putExtra(EXTRA_OLD_ITEM_POSITION, getIntent().getIntExtra(EXTRA_CURRENT_ITEM_POSITION, 0));
+        data.putExtra(EXTRA_CURRENT_ITEM_POSITION, mCurrentItemPosition);
         setResult(RESULT_OK, data);
-        mIsFinishing = true;
+        mIsReturning = true;
         super.finishAfterTransition();
     }
 
     @Override
     public void onPageSelected(int position) {
-        if (mCurrentItemPosition != position) {
-            mCurrentItemPosition = position;
-        }
+        mCurrentItemPosition = position;
     }
 
     @Override
@@ -276,9 +279,9 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         }
     }
 
-    private static void LOG(String message, boolean isFinishing) {
+    private static void LOG(String message, boolean isReturning) {
         if (DEBUG) {
-            Log.i(TAG, String.format("%s: %s", isFinishing ? "FINISHING" : "ENTERING", message));
+            Log.i(TAG, String.format("%s: %s", isReturning ? "RETURNING" : "ENTERING", message));
         }
     }
 }
