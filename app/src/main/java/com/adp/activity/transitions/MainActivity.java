@@ -85,8 +85,8 @@ public class MainActivity extends Activity {
 
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
         @Override
-        public MyHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            return new MyHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.grid_item, viewGroup, false));
+        public MyHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+            return new MyHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_main_card, viewGroup, false));
         }
 
         @Override

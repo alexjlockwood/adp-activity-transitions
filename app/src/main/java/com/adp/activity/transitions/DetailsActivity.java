@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.SharedElementCallback;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
 import android.transition.Slide;
@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.adp.activity.transitions.util.CircularReveal;
@@ -29,8 +30,6 @@ import com.adp.activity.transitions.util.CircularReveal;
 import java.util.List;
 import java.util.Map;
 
-import static com.adp.activity.transitions.MainActivity.CAPTIONS;
-import static com.adp.activity.transitions.MainActivity.COLORS;
 import static com.adp.activity.transitions.MainActivity.EXTRA_CURRENT_ITEM_POSITION;
 import static com.adp.activity.transitions.MainActivity.EXTRA_OLD_ITEM_POSITION;
 
@@ -38,122 +37,138 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
     private static final String TAG = "DetailsActivity";
     private static final boolean DEBUG = true;
 
-    private static final String STATE_CURRENT_ITEM_POSITION = "state_current_item_position";
-    private static final String STATE_OLD_ITEM_POSITION = "state_old_item_position";
+    private static final String STATE_CURRENT_POSITION = "state_current_position";
+    private static final String STATE_OLD_POSITION = "state_old_position";
 
-    private CurrentPageFragmentAdapter mAdapter;
-    private int mOldItemPosition;
-    private int mCurrentItemPosition;
+    private DetailsFragmentPagerAdapter mAdapter;
+    private int mCurrentPosition;
+    private int mOriginalPosition;
     private boolean mIsReturning;
 
     private final SharedElementCallback mCallback = new SharedElementCallback() {
         @Override
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
             LOG("onMapSharedElements(List<String>, Map<String, View>)", mIsReturning);
-            if (mIsReturning && mCurrentItemPosition != mOldItemPosition) {
+            if (mIsReturning && mCurrentPosition != mOriginalPosition) {
                 names.clear();
                 sharedElements.clear();
-                final View sharedView = mAdapter.getCurrentPageFragment().getSharedView();
+                final View sharedView = mAdapter.getCurrentDetailsFragment().getSharedView();
                 names.add(sharedView.getTransitionName());
                 sharedElements.put(sharedView.getTransitionName(), sharedView);
             }
         }
 
         @Override
-        public void onRejectSharedElements(List<View> rejectedSharedElements) {
-            LOG("onMapSharedElements(List<View>)", mIsReturning);
-        }
-
-        @Override
         public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
             LOG("onSharedElementStart(List<String>, List<View>, List<View>)", mIsReturning);
             if (!mIsReturning) {
-                // Create the enter transition.
-                final TransitionSet enterTransition = new TransitionSet();
-                enterTransition.addTransition(makeReveal(sharedElements.get(0)));
-                enterTransition.addTransition(makeCardSlide());
-                enterTransition.setOrdering(TransitionSet.ORDERING_TOGETHER);
-                getWindow().setEnterTransition(enterTransition);
+                getWindow().setEnterTransition(makeEnterTransition(sharedElements.get(0)));
             }
-        }
-
-        @Override
-        public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-            LOG("onSharedElementEnd(List<String>, List<View>, List<View>)", mIsReturning);
         }
     };
 
-    private static Transition makeReveal(View sharedElement) {
-        final Transition reveal = new CircularReveal(sharedElement);
-        reveal.addTarget(R.id.reveal_container); // TODO: is it OK to add target by ID or should we add a specific view instead?
-        return reveal;
+    private static Transition makeEnterTransition(View sharedElement) {
+        TransitionSet enterTransition = new TransitionSet();
+
+        // Play a circular reveal animation starting beneath the shared element.
+        Transition circularReveal = new CircularReveal(sharedElement);
+        circularReveal.addTarget(R.id.reveal_container); // TODO: is it OK to add target by ID or should we add a specific view instead?
+        enterTransition.addTransition(circularReveal);
+
+        // Slide the cards in through the bottom of the screen.
+        Transition cardSlide = new Slide(Gravity.BOTTOM);
+        cardSlide.addTarget(R.id.card_view); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        enterTransition.addTransition(cardSlide);
+
+        return enterTransition;
     }
 
-    private static Transition makeRevealContainerSlide() {
-        final TransitionSet transitionSet = new TransitionSet();
-        final Transition slide = new Slide(Gravity.TOP);
-        slide.addTarget(R.id.reveal_container); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
-        slide.addTarget(R.id.details_view);
-        transitionSet.addTransition(slide);
-        final Transition fade = new Fade();
-        fade.addTarget(R.id.reveal_container);
-        transitionSet.addTransition(fade);
-        transitionSet.setOrdering(TransitionSet.ORDERING_TOGETHER);
-        return transitionSet;
-    }
+    private static Transition makeReturnTransition() {
+        TransitionSet returnTransition = new TransitionSet();
 
-    private static Transition makeCardSlide() {
-        final Transition slide = new Slide(Gravity.BOTTOM);
-        slide.addTarget(R.id.card_view); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
-        return slide;
+        // Slide and fade the circular reveal container off the top of the screen.
+        TransitionSet slideFade = new TransitionSet();
+        slideFade.addTarget(R.id.reveal_container);  // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        slideFade.addTransition(new Slide(Gravity.TOP));
+        slideFade.addTransition(new Fade());
+        returnTransition.addTransition(slideFade);
+
+        // Slide the cards off the bottom of the screen.
+        Transition cardSlide = new Slide(Gravity.BOTTOM);
+        cardSlide.addTarget(R.id.card_view); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        returnTransition.addTransition(cardSlide);
+
+        return returnTransition;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        postponeEnterTransition();
         setContentView(R.layout.activity_details);
 
-        // Create the return transition.
-        final TransitionSet returnTransition = new TransitionSet();
-        returnTransition.addTransition(makeRevealContainerSlide());
-        returnTransition.addTransition(makeCardSlide());
-        returnTransition.setOrdering(TransitionSet.ORDERING_TOGETHER);
-        getWindow().setReturnTransition(returnTransition);
-
         if (savedInstanceState == null) {
-            mCurrentItemPosition = getIntent().getExtras().getInt(EXTRA_CURRENT_ITEM_POSITION);
-            mOldItemPosition = mCurrentItemPosition;
+            mCurrentPosition = getIntent().getExtras().getInt(EXTRA_CURRENT_ITEM_POSITION);
+            mOriginalPosition = mCurrentPosition;
         } else {
-            mCurrentItemPosition = savedInstanceState.getInt(STATE_CURRENT_ITEM_POSITION);
-            mOldItemPosition = savedInstanceState.getInt(STATE_OLD_ITEM_POSITION);
+            mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_POSITION);
+            mOriginalPosition = savedInstanceState.getInt(STATE_OLD_POSITION);
         }
 
-        mAdapter = new CurrentPageFragmentAdapter(getFragmentManager());
+        mAdapter = new DetailsFragmentPagerAdapter(getFragmentManager());
         final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(mAdapter);
         pager.setOnPageChangeListener(this);
-        pager.setCurrentItem(mCurrentItemPosition);
+        pager.setCurrentItem(mCurrentPosition);
 
         setEnterSharedElementCallback(mCallback);
+        getWindow().setReturnTransition(makeReturnTransition());
+        postponeEnterTransition();
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_CURRENT_ITEM_POSITION, mCurrentItemPosition);
-        outState.putInt(STATE_OLD_ITEM_POSITION, mOldItemPosition);
+        outState.putInt(STATE_CURRENT_POSITION, mCurrentPosition);
+        outState.putInt(STATE_OLD_POSITION, mOriginalPosition);
     }
 
-    public static class PageFragment extends Fragment {
+    @Override
+    public void finishAfterTransition() {
+        LOG("finishAfterTransition()");
+        final Intent data = new Intent();
+        data.putExtra(EXTRA_OLD_ITEM_POSITION, getIntent().getIntExtra(EXTRA_CURRENT_ITEM_POSITION, 0));
+        data.putExtra(EXTRA_CURRENT_ITEM_POSITION, mCurrentPosition);
+        setResult(RESULT_OK, data);
+        mIsReturning = true;
+        super.finishAfterTransition();
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        mCurrentPosition = position;
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        // Do nothing.
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        // Do nothing.
+    }
+
+    public static class DetailsFragment extends Fragment {
+        private static final int[] IMAGE_RESOURCES = {R.drawable.p241, R.drawable.p242, R.drawable.p243};
+        private static final String[] CAPTIONS = {"Season 5 #1", "Season 5 #2", "Season 6"};
         private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
 
         private View mSharedView;
 
-        public static PageFragment newInstance(int position) {
+        public static DetailsFragment newInstance(int position) {
             final Bundle args = new Bundle();
             args.putInt(ARG_SELECTED_IMAGE_POSITION, position);
-            final PageFragment fragment = new PageFragment();
+            final DetailsFragment fragment = new DetailsFragment();
             fragment.setArguments(args);
             return fragment;
         }
@@ -163,13 +178,12 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
             final View rootView = inflater.inflate(R.layout.fragment_details, container, false);
             final int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
             mSharedView = rootView.findViewById(R.id.details_view);
-            mSharedView.setBackgroundColor(COLORS[selectedPosition]);
-            mSharedView.setTransitionName(CAPTIONS[selectedPosition]);
+            mSharedView.setBackgroundColor(MainActivity.COLORS[selectedPosition]);
+            mSharedView.setTransitionName(MainActivity.CAPTIONS[selectedPosition]);
             final RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.num_columns)));
-            recyclerView.setAdapter(new MyAdapter());
-            final ViewTreeObserver observer = getActivity().getWindow().getDecorView().getViewTreeObserver();
-            observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(new MyAdapter(getActivity(), IMAGE_RESOURCES, CAPTIONS));
+            getActivity().getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
                     getActivity().getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
@@ -184,10 +198,20 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
             return mSharedView;
         }
 
-        private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
+        private static class MyAdapter extends RecyclerView.Adapter<MyHolder> {
+            private final LayoutInflater mInflater;
+            private final int[] mImageResources;
+            private final String[] mCaptions;
+
+            public MyAdapter(Context context, int[] imageResources, String[] captions) {
+                mInflater = LayoutInflater.from(context);
+                mImageResources = imageResources;
+                mCaptions = captions;
+            }
+
             @Override
             public MyHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-                return new MyHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.grid_item, viewGroup, false));
+                return new MyHolder(mInflater.inflate(R.layout.fragment_details_card, viewGroup, false),mImageResources, mCaptions);
             }
 
             @Override
@@ -197,80 +221,58 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
 
             @Override
             public int getItemCount() {
-                return COLORS.length;
+                return mImageResources.length;
             }
         }
 
-        private class MyHolder extends RecyclerView.ViewHolder {
-            private final View mView;
+        private static class MyHolder extends RecyclerView.ViewHolder {
+            private final ImageView mImageView;
             private final TextView mTextView;
+            private final int[] mImageResources;
+            private final String[] mCaptions;
 
-            public MyHolder(View itemView) {
+            public MyHolder(View itemView, int[] colors, String[] captions) {
                 super(itemView);
                 itemView.setClickable(true);
-                mView = itemView.findViewById(R.id.color_view);
-                mTextView = (TextView) itemView.findViewById(R.id.text_view);
+                mImageView = (ImageView) itemView.findViewById(R.id.image);
+                mTextView = (TextView) itemView.findViewById(R.id.text);
+                mImageResources = colors;
+                mCaptions = captions;
             }
 
             public void bind(int position) {
-                mView.setBackgroundColor(Color.GRAY);
-                mTextView.setText("Sample card #" + (position + 1));
+                mImageView.setImageResource(mImageResources[position]);
+                mTextView.setText(mCaptions[position]);
             }
         }
     }
 
-    private static class CurrentPageFragmentAdapter extends FragmentStatePagerAdapter {
-        private PageFragment mCurrentPageFragment;
+    private static class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {
+        private DetailsFragment mCurrentFragment;
 
-        public CurrentPageFragmentAdapter(FragmentManager fm) {
+        public DetailsFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-            return PageFragment.newInstance(position);
+            return DetailsFragment.newInstance(position);
         }
 
         @Override
         public int getCount() {
-            return COLORS.length;
+            return MainActivity.COLORS.length;
         }
 
         @Override
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
-            mCurrentPageFragment = (PageFragment) object;
+            mCurrentFragment = (DetailsFragment) object;
         }
 
-        public PageFragment getCurrentPageFragment() {
-            return mCurrentPageFragment;
+        public DetailsFragment getCurrentDetailsFragment() {
+            return mCurrentFragment;
         }
-    }
-
-    @Override
-    public void finishAfterTransition() {
-        LOG("finishAfterTransition()");
-        final Intent data = new Intent();
-        data.putExtra(EXTRA_OLD_ITEM_POSITION, getIntent().getIntExtra(EXTRA_CURRENT_ITEM_POSITION, 0));
-        data.putExtra(EXTRA_CURRENT_ITEM_POSITION, mCurrentItemPosition);
-        setResult(RESULT_OK, data);
-        mIsReturning = true;
-        super.finishAfterTransition();
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        mCurrentItemPosition = position;
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        // Do nothing.
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        // Do nothing.
     }
 
     private static void LOG(String message) {
