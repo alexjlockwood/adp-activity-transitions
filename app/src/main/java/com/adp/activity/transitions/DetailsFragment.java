@@ -2,10 +2,7 @@ package com.adp.activity.transitions;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class DetailsFragment extends Fragment {
@@ -72,7 +68,7 @@ public class DetailsFragment extends Fragment {
         private static final int ITEM_TYPE_HEADER = 0;
         private static final int ITEM_TYPE_CARD = 1;
 
-        private TranslatableHeaderView mHeader;
+        private ParallaxHeaderView mHeader;
         private final LayoutInflater mInflater;
         private final int[] mImageResources;
         private final String[] mCaptions;
@@ -86,8 +82,7 @@ public class DetailsFragment extends Fragment {
         @Override
         public RecyclerHolder onCreateViewHolder(ViewGroup viewGroup, int itemType) {
             if (itemType == ITEM_TYPE_HEADER) {
-                mHeader = new TranslatableHeaderView(viewGroup.getContext());
-                mHeader.addView(mInflater.inflate(R.layout.reveal_container, viewGroup, false));
+                mHeader = (ParallaxHeaderView) mInflater.inflate(R.layout.reveal_container, viewGroup, false);
                 return new HeaderHolder(mHeader);
             } else {
                 return new CardHolder(mInflater.inflate(R.layout.image_card, viewGroup, false),
@@ -120,6 +115,7 @@ public class DetailsFragment extends Fragment {
         public RecyclerHolder(View itemView) {
             super(itemView);
         }
+
         public abstract void bind(int position);
     }
 
@@ -131,6 +127,7 @@ public class DetailsFragment extends Fragment {
             mHeaderImage = (ImageView) itemView.findViewById(R.id.header_image);
         }
 
+        @Override
         public void bind(int position) {
             int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
             mHeaderImage.setTransitionName(MainActivity.CAPTIONS[selectedPosition]);
@@ -153,30 +150,10 @@ public class DetailsFragment extends Fragment {
             mCaptions = captions;
         }
 
+        @Override
         public void bind(int position) {
             mImageView.setImageResource(mImageResources[position - 1]);
             mTextView.setText(mCaptions[position - 1]);
-        }
-    }
-
-    private static class TranslatableHeaderView extends RelativeLayout {
-        private final Rect mTmpRect = new Rect();
-        private int mOffset;
-
-        public TranslatableHeaderView(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void dispatchDraw(@NonNull Canvas canvas) {
-            mTmpRect.set(getLeft(), getTop(), getRight(), getBottom() + mOffset);
-            canvas.clipRect(mTmpRect);
-            super.dispatchDraw(canvas);
-        }
-
-        public void setClipY(int offset) {
-            mOffset = offset;
-            invalidate();
         }
     }
 }

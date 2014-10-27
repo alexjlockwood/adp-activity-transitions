@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
             if (mTmpState != null) {
                 final int oldPosition = mTmpState.getInt(EXTRA_OLD_ITEM_POSITION);
                 final int currentPosition = mTmpState.getInt(EXTRA_CURRENT_ITEM_POSITION);
-                if (!sharedElements.isEmpty() && currentPosition != oldPosition) {
+                if (currentPosition != oldPosition) {
                     // If currentPosition != oldPosition the user must have swiped to a different
                     // page in the DetailsActivity. We must update the shared element so that the
                     // correct one falls into place.

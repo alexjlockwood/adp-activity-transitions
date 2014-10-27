@@ -51,6 +51,8 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
                     names.add(sharedView.getTransitionName());
                     sharedElements.put(sharedView.getTransitionName(), sharedView);
                 }
+                LOG(names.toString());
+                LOG(sharedElements.toString());
             }
         }
 
