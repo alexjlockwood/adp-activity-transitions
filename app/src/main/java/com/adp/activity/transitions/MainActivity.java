@@ -4,15 +4,15 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -24,15 +24,14 @@ public class MainActivity extends Activity {
 
     static final String EXTRA_CURRENT_ITEM_POSITION = "extra_current_item_position";
     static final String EXTRA_OLD_ITEM_POSITION = "extra_old_item_position";
-    static final int[] COLORS = {Color.RED, Color.GREEN, Color.BLUE, Color.DKGRAY, Color.CYAN, Color.YELLOW, Color.LTGRAY, Color.MAGENTA, Color.WHITE};
-    static final String[] CAPTIONS = {"Red", "Green", "Blue", "Dark Gray", "Cyan", "Yellow", "Light Gray", "Magenta" , "White"};
+    static final int[] IMAGES = {R.drawable.p24, R.drawable.hoc, R.drawable.hoc, R.drawable.p24, R.drawable.p24, R.drawable.hoc};
+    static final String[] CAPTIONS = {"24", "House of Cards", "House of Cards", "24", "25", "House of Cards"};
 
     private RecyclerView mRecyclerView;
     private Bundle mTmpState;
     private boolean mIsReentering;
 
     private final SharedElementCallback mCallback = new SharedElementCallback() {
-
         @Override
         public void onRejectSharedElements(List<View> rejectedSharedElements) {
             LOG("onMapSharedElements(List<View>)", mIsReentering);
@@ -78,7 +77,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, getResources().getInteger(R.integer.num_columns)));
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.num_columns), StaggeredGridLayoutManager.VERTICAL));
         mRecyclerView.setAdapter(new MyAdapter());
         setExitSharedElementCallback(mCallback);
     }
@@ -86,7 +85,7 @@ public class MainActivity extends Activity {
     private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
         @Override
         public MyHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            return new MyHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_main_card, viewGroup, false));
+            return new MyHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.image_card, viewGroup, false));
         }
 
         @Override
@@ -96,26 +95,26 @@ public class MainActivity extends Activity {
 
         @Override
         public int getItemCount() {
-            return COLORS.length;
+            return IMAGES.length;
         }
     }
 
     private class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final View mView;
+        private final ImageView mImage;
         private final TextView mTextView;
         private int mPosition;
 
         public MyHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
-            mView = itemView.findViewById(R.id.color_view);
-            mTextView = (TextView) itemView.findViewById(R.id.text_view);
+            mImage = (ImageView) itemView.findViewById(R.id.image);
+            mTextView = (TextView) itemView.findViewById(R.id.text);
+            mTextView.setOnClickListener(this);
         }
 
         public void bind(int position) {
-            mView.setBackgroundColor(COLORS[position]);
-            mView.setTransitionName(CAPTIONS[position]);
-            mView.setTag(CAPTIONS[position]);
+            mImage.setImageResource(IMAGES[position]);
+            mImage.setTransitionName(CAPTIONS[position]);
+            mImage.setTag(CAPTIONS[position]);
             mTextView.setText(CAPTIONS[position]);
             mPosition = position;
         }
@@ -126,7 +125,7 @@ public class MainActivity extends Activity {
             final Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
             intent.putExtra(EXTRA_CURRENT_ITEM_POSITION, mPosition);
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(
-                    MainActivity.this, mView, mView.getTransitionName()).toBundle());
+                    MainActivity.this, mImage, mImage.getTransitionName()).toBundle());
         }
     }
 

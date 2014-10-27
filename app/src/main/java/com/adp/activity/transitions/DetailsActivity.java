@@ -163,7 +163,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         private static final String[] CAPTIONS = {"Season 5 #1", "Season 5 #2", "Season 6"};
         private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
 
-        private View mSharedView;
+        private ImageView mSharedView;
 
         public static DetailsFragment newInstance(int position) {
             final Bundle args = new Bundle();
@@ -177,8 +177,8 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.fragment_details, container, false);
             final int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
-            mSharedView = rootView.findViewById(R.id.details_view);
-            mSharedView.setBackgroundColor(MainActivity.COLORS[selectedPosition]);
+            mSharedView = (ImageView) rootView.findViewById(R.id.header_image);
+            mSharedView.setImageResource(MainActivity.IMAGES[selectedPosition]);
             mSharedView.setTransitionName(MainActivity.CAPTIONS[selectedPosition]);
             final RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -211,7 +211,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
 
             @Override
             public MyHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-                return new MyHolder(mInflater.inflate(R.layout.fragment_details_card, viewGroup, false),mImageResources, mCaptions);
+                return new MyHolder(mInflater.inflate(R.layout.image_card, viewGroup, false),mImageResources, mCaptions);
             }
 
             @Override
@@ -261,7 +261,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
 
         @Override
         public int getCount() {
-            return MainActivity.COLORS.length;
+            return MainActivity.IMAGES.length;
         }
 
         @Override

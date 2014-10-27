@@ -1,5 +1,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -11,11 +12,10 @@
         android:layout_weight="1"
         android:background="@android:color/black">
 
-        <View
-            android:id="@+id/details_view"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_centerInParent="true"/>
+        <ImageView
+            android:id="@+id/header_image"
+            style="@style/HeaderPhoto"
+            tools:ignore="ContentDescription"/>
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
