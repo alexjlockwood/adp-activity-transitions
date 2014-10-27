@@ -17,7 +17,7 @@ public class DetailsFragment extends Fragment {
     private static final String[] CAPTIONS = {"Season 5 #1", "Season 5 #2", "Season 6"};
     private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
 
-    private ImageView mSharedView;
+    private RecyclerView mRecyclerView;
 
     public static DetailsFragment newInstance(int position) {
         final Bundle args = new Bundle();
@@ -31,14 +31,9 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_details, container, false);
 
-        int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
-        mSharedView = (ImageView) root.findViewById(R.id.header_image);
-        mSharedView.setImageResource(MainActivity.IMAGES[selectedPosition]);
-        mSharedView.setTransitionName(MainActivity.CAPTIONS[selectedPosition]);
-
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new CardAdapter(getActivity(), IMAGE_RESOURCES, CAPTIONS));
+        mRecyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(new CardAdapter(getActivity(), IMAGE_RESOURCES, CAPTIONS));
 
         root.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -52,11 +47,15 @@ public class DetailsFragment extends Fragment {
         return root;
     }
 
+    // TODO: handle the case where the header_image view has been recycled and no longer exists.
     public View getSharedView() {
-        return mSharedView;
+        return mRecyclerView.findViewById(R.id.header_image);
     }
 
-    private static class CardAdapter extends RecyclerView.Adapter<CardHolder> {
+    private class CardAdapter extends RecyclerView.Adapter<RecyclerHolder> {
+        private static final int ITEM_TYPE_HEADER = 0;
+        private static final int ITEM_TYPE_CARD = 1;
+
         private final LayoutInflater mInflater;
         private final int[] mImageResources;
         private final String[] mCaptions;
@@ -68,23 +67,54 @@ public class DetailsFragment extends Fragment {
         }
 
         @Override
-        public CardHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            return new CardHolder(mInflater.inflate(R.layout.image_card, viewGroup, false),
-                    mImageResources, mCaptions);
+        public RecyclerHolder onCreateViewHolder(ViewGroup viewGroup, int itemType) {
+            if (itemType == ITEM_TYPE_HEADER) {
+                return new HeaderHolder(mInflater.inflate(R.layout.reveal_container, viewGroup, false));
+            } else {
+                return new CardHolder(mInflater.inflate(R.layout.image_card, viewGroup, false),
+                        mImageResources, mCaptions);
+            }
         }
 
         @Override
-        public void onBindViewHolder(CardHolder holder, int position) {
+        public void onBindViewHolder(RecyclerHolder holder, int position) {
             holder.bind(position);
         }
 
         @Override
         public int getItemCount() {
-            return mImageResources.length;
+            return mImageResources.length + 1;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position == 0 ? ITEM_TYPE_HEADER : ITEM_TYPE_CARD;
         }
     }
 
-    private static class CardHolder extends RecyclerView.ViewHolder {
+    private abstract class RecyclerHolder extends RecyclerView.ViewHolder {
+        public RecyclerHolder(View itemView) {
+            super(itemView);
+        }
+        public abstract void bind(int position);
+    }
+
+    private class HeaderHolder extends RecyclerHolder {
+        private final ImageView mHeaderImage;
+
+        public HeaderHolder(View itemView) {
+            super(itemView);
+            mHeaderImage = (ImageView) itemView.findViewById(R.id.header_image);
+        }
+
+        public void bind(int position) {
+            int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
+            mHeaderImage.setTransitionName(MainActivity.CAPTIONS[selectedPosition]);
+            mHeaderImage.setImageResource(MainActivity.IMAGES[selectedPosition]);
+        }
+    }
+
+    private class CardHolder extends RecyclerHolder {
         private final ImageView mImageView;
         private final TextView mTextView;
         private final int[] mImageResources;
@@ -100,8 +130,8 @@ public class DetailsFragment extends Fragment {
         }
 
         public void bind(int position) {
-            mImageView.setImageResource(mImageResources[position]);
-            mTextView.setText(mCaptions[position]);
+            mImageView.setImageResource(mImageResources[position - 1]);
+            mTextView.setText(mCaptions[position - 1]);
         }
     }
 }

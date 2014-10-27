@@ -1,28 +1,6 @@
-<LinearLayout
+<android.support.v7.widget.RecyclerView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent" />
 
-    <RelativeLayout
-        android:id="@+id/reveal_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@android:color/black">
-
-        <ImageView
-            android:id="@+id/header_image"
-            style="@style/HeaderPhoto"
-            tools:ignore="ContentDescription"/>
-    </RelativeLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:padding="16dp"/>
-
-</LinearLayout>
