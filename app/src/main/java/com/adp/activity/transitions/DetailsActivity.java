@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
-import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.transition.Transition;
@@ -47,9 +46,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
                     // If shared view is null, then it has likely been scrolled off screen and
                     // recycled. In this case we cancel the shared element transition and use
                     // a fallback window animation instead.
-                    Transition returnTransition = new Explode();
-                    returnTransition.addTarget(R.id.card_view);
-                    getWindow().setReturnTransition(returnTransition);
+                    // TODO: write a "split slide" return transition, similar to Newsstand.
                 } else {
                     names.add(sharedView.getTransitionName());
                     sharedElements.put(sharedView.getTransitionName(), sharedView);
