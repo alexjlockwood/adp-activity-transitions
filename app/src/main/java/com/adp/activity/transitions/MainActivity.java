@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -25,7 +26,7 @@ public class MainActivity extends Activity {
     static final String EXTRA_CURRENT_ITEM_POSITION = "extra_current_item_position";
     static final String EXTRA_OLD_ITEM_POSITION = "extra_old_item_position";
     static final int[] IMAGES = {R.drawable.p24, R.drawable.hoc, R.drawable.hoc, R.drawable.p24, R.drawable.p24, R.drawable.hoc};
-    static final String[] CAPTIONS = {"24", "House of Cards", "House of Cards", "24", "25", "House of Cards"};
+    static final String[] CAPTIONS = {"24 #1", "House of Cards #1", "House of Cards #2", "24 #2", "24 #3", "House of Cards #3"};
 
     private RecyclerView mRecyclerView;
     private Bundle mTmpState;
@@ -76,20 +77,25 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Resources res = getResources();
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.num_columns), StaggeredGridLayoutManager.VERTICAL));
-        mRecyclerView.setAdapter(new MyAdapter());
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(
+                res.getInteger(R.integer.num_columns), StaggeredGridLayoutManager.VERTICAL));
+        mRecyclerView.setAdapter(new CardAdapter());
+
         setExitSharedElementCallback(mCallback);
     }
 
-    private class MyAdapter extends RecyclerView.Adapter<MyHolder> {
+    private class CardAdapter extends RecyclerView.Adapter<CardHolder> {
         @Override
-        public MyHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            return new MyHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.image_card, viewGroup, false));
+        public CardHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+            return new CardHolder(inflater.inflate(R.layout.image_card, viewGroup, false));
         }
 
         @Override
-        public void onBindViewHolder(MyHolder holder, int position) {
+        public void onBindViewHolder(CardHolder holder, int position) {
             holder.bind(position);
         }
 
@@ -99,12 +105,12 @@ public class MainActivity extends Activity {
         }
     }
 
-    private class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class CardHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView mImage;
         private final TextView mTextView;
         private int mPosition;
 
-        public MyHolder(View itemView) {
+        public CardHolder(View itemView) {
             super(itemView);
             mImage = (ImageView) itemView.findViewById(R.id.image);
             mTextView = (TextView) itemView.findViewById(R.id.text);

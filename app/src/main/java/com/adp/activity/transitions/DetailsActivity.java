@@ -1,29 +1,18 @@
 package com.adp.activity.transitions;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.SharedElementCallback;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.transition.Transition;
 import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.adp.activity.transitions.util.CircularReveal;
 
@@ -156,123 +145,6 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
     @Override
     public void onPageScrollStateChanged(int state) {
         // Do nothing.
-    }
-
-    public static class DetailsFragment extends Fragment {
-        private static final int[] IMAGE_RESOURCES = {R.drawable.p241, R.drawable.p242, R.drawable.p243};
-        private static final String[] CAPTIONS = {"Season 5 #1", "Season 5 #2", "Season 6"};
-        private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
-
-        private ImageView mSharedView;
-
-        public static DetailsFragment newInstance(int position) {
-            final Bundle args = new Bundle();
-            args.putInt(ARG_SELECTED_IMAGE_POSITION, position);
-            final DetailsFragment fragment = new DetailsFragment();
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            final View rootView = inflater.inflate(R.layout.fragment_details, container, false);
-            final int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
-            mSharedView = (ImageView) rootView.findViewById(R.id.header_image);
-            mSharedView.setImageResource(MainActivity.IMAGES[selectedPosition]);
-            mSharedView.setTransitionName(MainActivity.CAPTIONS[selectedPosition]);
-            final RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            recyclerView.setAdapter(new MyAdapter(getActivity(), IMAGE_RESOURCES, CAPTIONS));
-            getActivity().getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    getActivity().getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
-                    getActivity().startPostponedEnterTransition();
-                    return true;
-                }
-            });
-            return rootView;
-        }
-
-        public View getSharedView() {
-            return mSharedView;
-        }
-
-        private static class MyAdapter extends RecyclerView.Adapter<MyHolder> {
-            private final LayoutInflater mInflater;
-            private final int[] mImageResources;
-            private final String[] mCaptions;
-
-            public MyAdapter(Context context, int[] imageResources, String[] captions) {
-                mInflater = LayoutInflater.from(context);
-                mImageResources = imageResources;
-                mCaptions = captions;
-            }
-
-            @Override
-            public MyHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-                return new MyHolder(mInflater.inflate(R.layout.image_card, viewGroup, false),mImageResources, mCaptions);
-            }
-
-            @Override
-            public void onBindViewHolder(MyHolder holder, int position) {
-                holder.bind(position);
-            }
-
-            @Override
-            public int getItemCount() {
-                return mImageResources.length;
-            }
-        }
-
-        private static class MyHolder extends RecyclerView.ViewHolder {
-            private final ImageView mImageView;
-            private final TextView mTextView;
-            private final int[] mImageResources;
-            private final String[] mCaptions;
-
-            public MyHolder(View itemView, int[] colors, String[] captions) {
-                super(itemView);
-                itemView.setClickable(true);
-                mImageView = (ImageView) itemView.findViewById(R.id.image);
-                mTextView = (TextView) itemView.findViewById(R.id.text);
-                mImageResources = colors;
-                mCaptions = captions;
-            }
-
-            public void bind(int position) {
-                mImageView.setImageResource(mImageResources[position]);
-                mTextView.setText(mCaptions[position]);
-            }
-        }
-    }
-
-    private static class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {
-        private DetailsFragment mCurrentFragment;
-
-        public DetailsFragmentPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return DetailsFragment.newInstance(position);
-        }
-
-        @Override
-        public int getCount() {
-            return MainActivity.IMAGES.length;
-        }
-
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            super.setPrimaryItem(container, position, object);
-            mCurrentFragment = (DetailsFragment) object;
-        }
-
-        public DetailsFragment getCurrentDetailsFragment() {
-            return mCurrentFragment;
-        }
     }
 
     private static void LOG(String message) {
