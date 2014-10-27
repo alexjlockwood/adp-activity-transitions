@@ -2,7 +2,11 @@ package com.adp.activity.transitions;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class DetailsFragment extends Fragment {
@@ -18,6 +23,8 @@ public class DetailsFragment extends Fragment {
     private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
 
     private RecyclerView mRecyclerView;
+    private CardAdapter mAdapter;
+    private int mCurrentOffset;
 
     public static DetailsFragment newInstance(int position) {
         final Bundle args = new Bundle();
@@ -31,9 +38,18 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_details, container, false);
 
+        mAdapter = new CardAdapter(getActivity(), IMAGE_RESOURCES, CAPTIONS);
         mRecyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(new CardAdapter(getActivity(), IMAGE_RESOURCES, CAPTIONS));
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                mCurrentOffset += dy;
+                mAdapter.translateHeader(mCurrentOffset * 0.5f);
+            }
+        });
 
         root.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -47,7 +63,7 @@ public class DetailsFragment extends Fragment {
         return root;
     }
 
-    // TODO: handle the case where the header_image view has been recycled and no longer exists.
+    @Nullable // Might return null if the header image is no longer on screen.
     public View getSharedView() {
         return mRecyclerView.findViewById(R.id.header_image);
     }
@@ -56,6 +72,7 @@ public class DetailsFragment extends Fragment {
         private static final int ITEM_TYPE_HEADER = 0;
         private static final int ITEM_TYPE_CARD = 1;
 
+        private TranslatableHeaderView mHeader;
         private final LayoutInflater mInflater;
         private final int[] mImageResources;
         private final String[] mCaptions;
@@ -69,7 +86,9 @@ public class DetailsFragment extends Fragment {
         @Override
         public RecyclerHolder onCreateViewHolder(ViewGroup viewGroup, int itemType) {
             if (itemType == ITEM_TYPE_HEADER) {
-                return new HeaderHolder(mInflater.inflate(R.layout.reveal_container, viewGroup, false));
+                mHeader = new TranslatableHeaderView(viewGroup.getContext());
+                mHeader.addView(mInflater.inflate(R.layout.reveal_container, viewGroup, false));
+                return new HeaderHolder(mHeader);
             } else {
                 return new CardHolder(mInflater.inflate(R.layout.image_card, viewGroup, false),
                         mImageResources, mCaptions);
@@ -89,6 +108,11 @@ public class DetailsFragment extends Fragment {
         @Override
         public int getItemViewType(int position) {
             return position == 0 ? ITEM_TYPE_HEADER : ITEM_TYPE_CARD;
+        }
+
+        public void translateHeader(float offset) {
+            mHeader.setTranslationY(offset);
+            mHeader.setClipY(Math.round(offset));
         }
     }
 
@@ -132,6 +156,27 @@ public class DetailsFragment extends Fragment {
         public void bind(int position) {
             mImageView.setImageResource(mImageResources[position - 1]);
             mTextView.setText(mCaptions[position - 1]);
+        }
+    }
+
+    private static class TranslatableHeaderView extends RelativeLayout {
+        private final Rect mTmpRect = new Rect();
+        private int mOffset;
+
+        public TranslatableHeaderView(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void dispatchDraw(@NonNull Canvas canvas) {
+            mTmpRect.set(getLeft(), getTop(), getRight(), getBottom() + mOffset);
+            canvas.clipRect(mTmpRect);
+            super.dispatchDraw(canvas);
+        }
+
+        public void setClipY(int offset) {
+            mOffset = offset;
+            invalidate();
         }
     }
 }
