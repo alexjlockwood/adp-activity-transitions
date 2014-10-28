@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
 
     static final String EXTRA_CURRENT_ITEM_POSITION = "extra_current_item_position";
     static final String EXTRA_OLD_ITEM_POSITION = "extra_old_item_position";
-    static final int[] IMAGES = {R.drawable.p24, R.drawable.hoc, R.drawable.hoc, R.drawable.p24, R.drawable.p24, R.drawable.hoc};
+    static final int[] IMAGES = {R.drawable.radiohead_backwards_600, R.drawable.hoc, R.drawable.hoc, R.drawable.p24, R.drawable.p24, R.drawable.hoc};
     static final String[] CAPTIONS = {"24 #1", "House of Cards #1", "House of Cards #2", "24 #2", "24 #3", "House of Cards #3"};
 
     private RecyclerView mRecyclerView;

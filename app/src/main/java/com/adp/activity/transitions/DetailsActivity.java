@@ -65,7 +65,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         }
     };
 
-    private static Transition makeEnterTransition(View sharedElement) {
+    private Transition makeEnterTransition(View sharedElement) {
         TransitionSet enterTransition = new TransitionSet();
 
         // Play a circular reveal animation starting beneath the shared element.
@@ -77,6 +77,13 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         Transition cardSlide = new Slide(Gravity.BOTTOM);
         cardSlide.addTarget(R.id.card_view); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
         enterTransition.addTransition(cardSlide);
+
+        enterTransition.addListener(new TransitionListenerAdapter() {
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                findViewById(R.id.band_image).animate().alpha(1).setDuration(2000);
+            }
+        });
 
         return enterTransition;
     }
