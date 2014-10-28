@@ -1,8 +1,13 @@
 package com.adp.activity.transitions;
 
 import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +21,7 @@ public class DetailsFragment extends Fragment {
 
     private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
 
-    private ObservableScrollView mScrollView;
-    private ParallaxHeaderView mHeader;
-    private int mCurrentOffset;
+    private View mHeader;
 
     public static DetailsFragment newInstance(int position) {
         final Bundle args = new Bundle();
@@ -32,27 +35,14 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_details, container, false);
 
-        mScrollView = (ObservableScrollView) root.findViewById(R.id.scroll_view);
-//        mScrollView.setOnScrollListener(new ObservableScrollView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(int l, int t, int oldl, int oldt) {
-//                Log.i(TAG, String.format("onScrolled(%d, %d, %d, %d)", l, t, oldl, oldt));
-//                    float backgroundTop = t * 0.5f;
-//                    backgroundTop = Math.max(0, backgroundTop);
-//                    Log.i(TAG, "setTranslationY(" + backgroundTop + ")");
-//                    mHeader.setTranslationY(backgroundTop);
-//                    Log.i(TAG, "getY()" + mHeader.getY());
-//            }
-//        });
-        mHeader = (ParallaxHeaderView) root.findViewById(R.id.parallax_header);
+        mHeader = root.findViewById(R.id.reveal_container);
 
         int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
         ImageView headerImage = (ImageView) mHeader.findViewById(R.id.header_image);
         headerImage.setTransitionName(MainActivity.CAPTIONS[selectedPosition]);
         headerImage.setImageResource(MainActivity.IMAGES[selectedPosition]);
-
-        TextView title = (TextView) root.findViewById(R.id.title);
-        title.setText(MainActivity.CAPTIONS[selectedPosition]);
+        colorize(root, (((BitmapDrawable) headerImage.getDrawable()).getBitmap()));
+        ((TextView) root.findViewById(R.id.title)).setText(MainActivity.CAPTIONS[selectedPosition]);
 
         root.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -68,7 +58,24 @@ public class DetailsFragment extends Fragment {
 
     @Nullable // Might return null if the header image is no longer on screen.
     public View getSharedView() {
-        return mScrollView.findViewById(R.id.header_image);
+        return mHeader.findViewById(R.id.header_image);
     }
 
+    private void colorize(View view, Bitmap photo) {
+        Palette palette = Palette.generate(photo);
+        applyPalette(view, palette);
+    }
+
+    private void applyPalette(View view, Palette palette) {
+        getActivity().getWindow().setBackgroundDrawable(new ColorDrawable(palette.getDarkMutedSwatch().getRgb()));
+
+        TextView titleView = (TextView) view.findViewById(R.id.title);
+        titleView.setTextColor(palette.getVibrantColor(Color.BLACK));
+
+        TextView descriptionView = (TextView) view.findViewById(R.id.description);
+        descriptionView.setTextColor(palette.getLightVibrantColor(Color.BLACK));
+
+        View infoView = view.findViewById(R.id.text_container);
+        infoView.setBackgroundColor(palette.getLightMutedColor(Color.WHITE));
+    }
 }

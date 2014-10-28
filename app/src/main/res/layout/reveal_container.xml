@@ -1,28 +1,23 @@
-<com.adp.activity.transitions.ParallaxHeaderView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/reveal_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="200dp"
+    android:background="@android:color/black">
 
-    <RelativeLayout
-        android:id="@+id/reveal_container"
+    <ImageView
+        android:id="@+id/band_image"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@android:color/black">
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:src="@drawable/radiohead_band_1240"
+        android:tint="@color/photo_tint"
+        tools:ignore="ContentDescription"/>
 
-        <ImageView
-            android:id="@+id/band_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/radiohead_band_1240"
-            android:tint="@color/photo_tint"
-            android:alpha="0"
-            tools:ignore="ContentDescription"/>
+    <ImageView
+        android:id="@+id/header_image"
+        style="@style/HeaderPhoto"
+        tools:ignore="ContentDescription"/>
 
-        <ImageView
-            android:id="@+id/header_image"
-            style="@style/HeaderPhoto"
-            tools:ignore="ContentDescription"/>
-
-    </RelativeLayout>
-</com.adp.activity.transitions.ParallaxHeaderView>
+</RelativeLayout>

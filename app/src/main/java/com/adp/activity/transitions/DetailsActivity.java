@@ -75,7 +75,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
 
         // Slide the cards in through the bottom of the screen.
         Transition cardSlide = new Slide(Gravity.BOTTOM);
-        cardSlide.addTarget(R.id.card_view); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        cardSlide.addTarget(R.id.text_container); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
         enterTransition.addTransition(cardSlide);
 
         enterTransition.addListener(new TransitionListenerAdapter() {
@@ -100,7 +100,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
 
         // Slide the cards off the bottom of the screen.
         Transition cardSlide = new Slide(Gravity.BOTTOM);
-        cardSlide.addTarget(R.id.card_view); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        cardSlide.addTarget(R.id.text_container); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
         returnTransition.addTransition(cardSlide);
 
         return returnTransition;
