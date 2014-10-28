@@ -3,7 +3,6 @@ package com.adp.activity.transitions;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,17 +33,17 @@ public class DetailsFragment extends Fragment {
         final View root = inflater.inflate(R.layout.fragment_details, container, false);
 
         mScrollView = (ObservableScrollView) root.findViewById(R.id.scroll_view);
-        mScrollView.setOnScrollListener(new ObservableScrollView.OnScrollListener() {
-            @Override
-            public void onScrolled(int l, int t, int oldl, int oldt) {
-                Log.i(TAG, String.format("onScrolled(%d, %d, %d, %d)", l, t, oldl, oldt));
-                    float backgroundTop = t * 0.5f;
-                    backgroundTop = Math.max(0, backgroundTop);
-                    Log.i(TAG, "setTranslationY(" + backgroundTop + ")");
-                    mHeader.setTranslationY(backgroundTop);
-                    Log.i(TAG, "getY()" + mHeader.getY());
-            }
-        });
+//        mScrollView.setOnScrollListener(new ObservableScrollView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(int l, int t, int oldl, int oldt) {
+//                Log.i(TAG, String.format("onScrolled(%d, %d, %d, %d)", l, t, oldl, oldt));
+//                    float backgroundTop = t * 0.5f;
+//                    backgroundTop = Math.max(0, backgroundTop);
+//                    Log.i(TAG, "setTranslationY(" + backgroundTop + ")");
+//                    mHeader.setTranslationY(backgroundTop);
+//                    Log.i(TAG, "getY()" + mHeader.getY());
+//            }
+//        });
         mHeader = (ParallaxHeaderView) root.findViewById(R.id.parallax_header);
 
         int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
