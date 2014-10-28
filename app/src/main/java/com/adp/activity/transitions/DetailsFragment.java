@@ -3,6 +3,7 @@ package com.adp.activity.transitions;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class DetailsFragment extends Fragment {
+    private static final String TAG = "DetailsFragment";
+    private static final boolean DEBUG = true;
+
     private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
 
     private ObservableScrollView mScrollView;
@@ -32,9 +36,13 @@ public class DetailsFragment extends Fragment {
         mScrollView = (ObservableScrollView) root.findViewById(R.id.scroll_view);
         mScrollView.setOnScrollListener(new ObservableScrollView.OnScrollListener() {
             @Override
-            public void onScrolled(int dx, int dy) {
-                mCurrentOffset += dy;
-                mHeader.setVerticalOffset(mCurrentOffset * 0.5f);
+            public void onScrolled(int l, int t, int oldl, int oldt) {
+                Log.i(TAG, String.format("onScrolled(%d, %d, %d, %d)", l, t, oldl, oldt));
+                    float backgroundTop = t * 0.5f;
+                    backgroundTop = Math.max(0, backgroundTop);
+                    Log.i(TAG, "setTranslationY(" + backgroundTop + ")");
+                    mHeader.setTranslationY(backgroundTop);
+                    Log.i(TAG, "getY()" + mHeader.getY());
             }
         });
         mHeader = (ParallaxHeaderView) root.findViewById(R.id.parallax_header);
