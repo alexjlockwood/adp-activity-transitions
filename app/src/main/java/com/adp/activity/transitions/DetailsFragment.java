@@ -43,7 +43,7 @@ public class DetailsFragment extends Fragment {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 mCurrentOffset += dy;
-                mAdapter.translateHeader(mCurrentOffset * 0.5f);
+                mAdapter.setHeaderOffset(mCurrentOffset * 0.5f);
             }
         });
 
@@ -105,9 +105,8 @@ public class DetailsFragment extends Fragment {
             return position == 0 ? ITEM_TYPE_HEADER : ITEM_TYPE_CARD;
         }
 
-        public void translateHeader(float offset) {
-            mHeader.setTranslationY(offset);
-            mHeader.setClipY(Math.round(offset));
+        public void setHeaderOffset(float offset) {
+            mHeader.setVerticalOffset(offset);
         }
     }
 

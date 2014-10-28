@@ -5,9 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 
-public class ParallaxHeaderView extends RelativeLayout {
+public class ParallaxHeaderView extends FrameLayout {
     private final Rect mTmpRect = new Rect();
     private int mVerticalOffset;
 
@@ -22,8 +22,9 @@ public class ParallaxHeaderView extends RelativeLayout {
         super.dispatchDraw(canvas);
     }
 
-    public void setClipY(int offset) {
-        mVerticalOffset = offset;
+    public void setVerticalOffset(float offset) {
+        setTranslationY(offset);
+        mVerticalOffset = Math.round(offset);
         invalidate();
     }
 }
