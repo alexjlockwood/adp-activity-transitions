@@ -1,6 +1,61 @@
-<android.support.v7.widget.RecyclerView
+<com.adp.activity.transitions.ObservableScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recycler_view"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.adp.activity.transitions.ParallaxHeaderView
+            android:id="@+id/parallax_header"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/reveal_container"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@android:color/black">
+
+                <ImageView
+                    android:id="@+id/band_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="0"
+                    android:src="@drawable/radiohead_band_1240"
+                    android:tint="@color/photo_tint"
+                    tools:ignore="ContentDescription"/>
+
+                <ImageView
+                    android:id="@+id/header_image"
+                    style="@style/HeaderPhoto"
+                    tools:ignore="ContentDescription"/>
+
+            </RelativeLayout>
+        </com.adp.activity.transitions.ParallaxHeaderView>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:fontFamily="sans-serif-light"
+            android:textSize="40sp"/>
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="12dp"
+            android:lineSpacingMultiplier="1.2"
+            android:text="@string/lorem"
+            android:textSize="20sp"/>
+    </LinearLayout>
+</com.adp.activity.transitions.ObservableScrollView>
