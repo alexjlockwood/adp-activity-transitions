@@ -6,31 +6,28 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/details_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <FrameLayout
             android:id="@+id/reveal_container"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:background="@android:color/black">
 
             <ImageView
-                android:id="@+id/band_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0"
-                android:src="@drawable/radiohead_band_1240"
-                android:tint="@color/photo_tint"
+                android:id="@+id/background_image"
+                style="@style/DetailsBackgroundPhoto"
                 tools:ignore="ContentDescription"/>
 
             <ImageView
                 android:id="@+id/header_image"
-                style="@style/HeaderPhoto"
+                style="@style/DetailsHeaderPhoto"
                 tools:ignore="ContentDescription"/>
 
-        </RelativeLayout>
+        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/text_container"
@@ -41,23 +38,11 @@
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:fontFamily="sans-serif-light"
-                android:textSize="40sp"/>
+                style="@style/DetailsTextTitle"/>
 
             <TextView
                 android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
-                android:layout_marginTop="12dp"
-                android:lineSpacingMultiplier="1.2"
-                android:text="@string/lorem"
-                android:textSize="20sp"/>
+                style="@style/DetailsTextDescription"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

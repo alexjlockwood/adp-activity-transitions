@@ -1,10 +1,13 @@
 <resources>
 
-    <style name="AppTheme" parent="android:Theme.Material.Light">
+    <style name="AppTheme" parent="android:Theme.Material.Light.DarkActionBar">
         <item name="android:statusBarColor">@android:color/black</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+        <!--<item name="android:colorPrimary">@color/purple_500</item>-->
+        <!--<item name="android:colorPrimaryDark">@color/purple_700</item>-->
+        <!--<item name="android:colorAccent">@color/pink_A200</item>-->
         <!--<item name="android:windowSharedElementReenterTransition">@null</item>-->
         <!--<item name="android:windowAllowEnterTransitionOverlap">true</item>-->
         <!--<item name="android:windowAllowReturnTransitionOverlap">true</item>-->
@@ -12,13 +15,13 @@
     </style>
 
     <style name="AppTheme.NoActionBar" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@android:color/black</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
         <!--<item name="android:windowSharedElementReenterTransition">@null</item>-->
         <!--<item name="android:windowAllowEnterTransitionOverlap">true</item>-->
         <!--<item name="android:windowAllowReturnTransitionOverlap">true</item>-->
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
 </resources>

@@ -4,10 +4,10 @@ import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +20,16 @@ public class DetailsFragment extends Fragment {
     private static final boolean DEBUG = true;
 
     private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
+    private static final SparseArray<Bitmap> BITMAP_CACHE = new SparseArray<>();
 
-    private View mHeader;
+    private static final int[] BACKGROUND_IMAGES = {
+            R.drawable.thom1,
+            R.drawable.thom2,
+            R.drawable.thom3,
+            R.drawable.thom4,
+            R.drawable.thom5,
+            R.drawable.thom6,
+    };
 
     public static DetailsFragment newInstance(int position) {
         final Bundle args = new Bundle();
@@ -34,15 +42,17 @@ public class DetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_details, container, false);
-
-        mHeader = root.findViewById(R.id.reveal_container);
+        View revealContainer = root.findViewById(R.id.reveal_container);
+        ImageView headerImage = (ImageView) revealContainer.findViewById(R.id.header_image);
+        ImageView backgroundImage = (ImageView) revealContainer.findViewById(R.id.background_image);
+        View infoText = root.findViewById(R.id.text_container);
+        TextView titleText = (TextView) infoText.findViewById(R.id.title);
+        TextView descText = (TextView) infoText.findViewById(R.id.description);
 
         int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
-        ImageView headerImage = (ImageView) mHeader.findViewById(R.id.header_image);
         headerImage.setTransitionName(MainActivity.CAPTIONS[selectedPosition]);
         headerImage.setImageResource(MainActivity.IMAGES[selectedPosition]);
-        colorize(root, (((BitmapDrawable) headerImage.getDrawable()).getBitmap()));
-        ((TextView) root.findViewById(R.id.title)).setText(MainActivity.CAPTIONS[selectedPosition]);
+        titleText.setText(MainActivity.CAPTIONS[selectedPosition]);
 
         root.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -53,29 +63,36 @@ public class DetailsFragment extends Fragment {
             }
         });
 
+
+        int imageResource = BACKGROUND_IMAGES[selectedPosition];
+        Bitmap bitmap = BITMAP_CACHE.get(imageResource);
+        if (BITMAP_CACHE.get(imageResource) == null) {
+            backgroundImage.setImageResource(BACKGROUND_IMAGES[selectedPosition]);
+            bitmap = (((BitmapDrawable) backgroundImage.getDrawable()).getBitmap());
+            BITMAP_CACHE.put(imageResource, bitmap);
+        } else {
+            backgroundImage.setImageBitmap(bitmap);
+        }
+
+        Palette palette = Palette.generate(bitmap, 24);
+        //getActivity().getWindow().setBackgroundDrawable(new ColorDrawable(palette.getDarkMutedColor(Color.WHITE)));
+        titleText.setTextColor(palette.getDarkVibrantColor(Color.BLACK));
+        descText.setTextColor(palette.getVibrantColor(Color.BLACK));
+        infoText.setBackgroundColor(palette.getLightMutedColor(Color.WHITE));
+
         return root;
     }
 
+    // TODO: need to reimplement this so that it returns null when the image is off screen.
     @Nullable // Might return null if the header image is no longer on screen.
     public View getSharedView() {
-        return mHeader.findViewById(R.id.header_image);
+        if (getView() == null) {
+            return null;
+        }
+        return getView().findViewById(R.id.header_image);
     }
 
     private void colorize(View view, Bitmap photo) {
-        Palette palette = Palette.generate(photo);
-        applyPalette(view, palette);
-    }
 
-    private void applyPalette(View view, Palette palette) {
-        getActivity().getWindow().setBackgroundDrawable(new ColorDrawable(palette.getDarkMutedSwatch().getRgb()));
-
-        TextView titleView = (TextView) view.findViewById(R.id.title);
-        titleView.setTextColor(palette.getVibrantColor(Color.BLACK));
-
-        TextView descriptionView = (TextView) view.findViewById(R.id.description);
-        descriptionView.setTextColor(palette.getLightVibrantColor(Color.BLACK));
-
-        View infoView = view.findViewById(R.id.text_container);
-        infoView.setBackgroundColor(palette.getLightMutedColor(Color.WHITE));
     }
 }

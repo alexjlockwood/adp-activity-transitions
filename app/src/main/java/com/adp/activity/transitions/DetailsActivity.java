@@ -13,6 +13,7 @@ import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.adp.activity.transitions.util.CircularReveal;
 
@@ -30,6 +31,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
     private static final String STATE_OLD_POSITION = "state_old_position";
 
     private DetailsFragmentPagerAdapter mAdapter;
+    private ImageView mBackgroundImage;
     private int mCurrentPosition;
     private int mOriginalPosition;
     private boolean mIsReturning;
@@ -51,8 +53,6 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
                     names.add(sharedView.getTransitionName());
                     sharedElements.put(sharedView.getTransitionName(), sharedView);
                 }
-                LOG(names.toString());
-                LOG(sharedElements.toString());
             }
         }
 
@@ -78,10 +78,12 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         cardSlide.addTarget(R.id.text_container); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
         enterTransition.addTransition(cardSlide);
 
+        mBackgroundImage = (ImageView) findViewById(R.id.background_image);
+        mBackgroundImage.setAlpha(0f);
         enterTransition.addListener(new TransitionListenerAdapter() {
             @Override
             public void onTransitionEnd(Transition transition) {
-                findViewById(R.id.band_image).animate().alpha(1).setDuration(2000);
+                mBackgroundImage.animate().alpha(1).setDuration(2000);
             }
         });
 
