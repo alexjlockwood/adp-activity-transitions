@@ -70,18 +70,12 @@ public class MainActivity extends Activity {
             View actionBar = decor.findViewById(getResources().getIdentifier("action_bar_container", "id", "android"));
 
             if (!mIsReentering) {
-                if (navigationBar != null) {
-                    names.add("navigationBar");
-                    sharedElements.put("navigationBar", navigationBar);
-                }
-                if (statusBar != null) {
-                    names.add("statusBar");
-                    sharedElements.put("statusBar", statusBar);
-                }
-                if (actionBar != null) {
-                    names.add("actionBar");
-                    sharedElements.put("actionBar", actionBar);
-                }
+                names.add("navigationBar");
+                sharedElements.put("navigationBar", navigationBar);
+                names.add("statusBar");
+                sharedElements.put("statusBar", statusBar);
+                names.add("actionBar");
+                sharedElements.put("actionBar", actionBar);
             } else {
                 names.remove("actionBar");
                 sharedElements.remove("actionBar");

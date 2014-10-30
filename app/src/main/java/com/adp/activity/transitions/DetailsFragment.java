@@ -27,6 +27,8 @@ public class DetailsFragment extends Fragment {
             R.drawable.thom4,
             R.drawable.thom5,
             R.drawable.thom6,
+            R.drawable.thom6,
+            R.drawable.thom6,
     };
 
     public static DetailsFragment newInstance(int position) {
