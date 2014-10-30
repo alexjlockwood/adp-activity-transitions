@@ -6,8 +6,8 @@ import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +16,10 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
@@ -27,8 +29,9 @@ public class MainActivity extends Activity {
     static final String EXTRA_OLD_ITEM_POSITION = "extra_old_item_position";
     static final int[] IMAGES = {R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
             R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
-            R.drawable.radiohead_backwards_600};
-    static final String[] CAPTIONS = {"24 #1", "House of Cards #1", "House of Cards #2", "24 #2", "24 #3", "House of Cards #3"};
+            R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600};
+    static final String[] CAPTIONS = {"Radiohead #1", "Radiohead #2", "Radiohead #3", "Radiohead #4",
+            "Radiohead #5", "Radiohead #6", "Radiohead #7", "Radiohead #8"};
 
     private RecyclerView mRecyclerView;
     private Bundle mTmpState;
@@ -51,7 +54,7 @@ public class MainActivity extends Activity {
                     // page in the DetailsActivity. We must update the shared element so that the
                     // correct one falls into place.
                     final String newTransitionName = CAPTIONS[currentPosition];
-                    final View newSharedView =  mRecyclerView.findViewWithTag(newTransitionName);
+                    final View newSharedView = mRecyclerView.findViewWithTag(newTransitionName);
                     if (newSharedView != null) {
                         names.clear();
                         names.add(newTransitionName);
@@ -60,6 +63,36 @@ public class MainActivity extends Activity {
                     }
                 }
             }
+
+            View decor = getWindow().getDecorView();
+            View navigationBar = decor.findViewById(android.R.id.navigationBarBackground);
+            View statusBar = decor.findViewById(android.R.id.statusBarBackground);
+            View actionBar = decor.findViewById(getResources().getIdentifier("action_bar_container", "id", "android"));
+
+            if (!mIsReentering) {
+                if (navigationBar != null) {
+                    names.add("navigationBar");
+                    sharedElements.put("navigationBar", navigationBar);
+                }
+                if (statusBar != null) {
+                    names.add("statusBar");
+                    sharedElements.put("statusBar", statusBar);
+                }
+                if (actionBar != null) {
+                    names.add("actionBar");
+                    sharedElements.put("actionBar", actionBar);
+                }
+            } else {
+                names.remove("actionBar");
+                sharedElements.remove("actionBar");
+                names.remove("statusBar");
+                sharedElements.remove("statusBar");
+                names.remove("navigationBar");
+                sharedElements.remove("navigationBar");
+            }
+
+            LOG("=== names: " + names.toString(), mIsReentering);
+            LOG("=== sharedElements: " + makeString(sharedElements.keySet()), mIsReentering);
         }
 
         @Override
@@ -80,8 +113,7 @@ public class MainActivity extends Activity {
 
         Resources res = getResources();
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(
-                res.getInteger(R.integer.num_columns), StaggeredGridLayoutManager.VERTICAL));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, res.getInteger(R.integer.num_columns)));
         mRecyclerView.setAdapter(new CardAdapter());
 
         setExitSharedElementCallback(mCallback);
@@ -162,9 +194,31 @@ public class MainActivity extends Activity {
         mIsReentering = false;
     }
 
+    private static void LOG(String message) {
+        if (DEBUG) {
+            Log.i(TAG, message);
+        }
+    }
+
     private static void LOG(String message, boolean isReentering) {
         if (DEBUG) {
             Log.i(TAG, String.format("%s: %s", isReentering ? "REENTERING" : "EXITING", message));
+        }
+    }
+
+    private static String makeString(Set<String> set) {
+        Iterator<String> i = set.iterator();
+        if (!i.hasNext())
+            return "[]";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        while (true) {
+            String e = i.next();
+            sb.append(e);
+            if (!i.hasNext())
+                return sb.append(']').toString();
+            sb.append(", ");
         }
     }
 }

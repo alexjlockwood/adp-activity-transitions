@@ -2,11 +2,9 @@ package com.adp.activity.transitions;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.graphics.Palette;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,11 +72,11 @@ public class DetailsFragment extends Fragment {
             backgroundImage.setImageBitmap(bitmap);
         }
 
-        Palette palette = Palette.generate(bitmap, 24);
+//        Palette palette = Palette.generate(bitmap, 24);
         //getActivity().getWindow().setBackgroundDrawable(new ColorDrawable(palette.getDarkMutedColor(Color.WHITE)));
-        titleText.setTextColor(palette.getDarkVibrantColor(Color.BLACK));
-        descText.setTextColor(palette.getVibrantColor(Color.BLACK));
-        infoText.setBackgroundColor(palette.getLightMutedColor(Color.WHITE));
+//        titleText.setTextColor(palette.getDarkVibrantColor(Color.BLACK));
+//        descText.setTextColor(palette.getVibrantColor(Color.BLACK));
+//        infoText.setBackgroundColor(palette.getLightMutedColor(Color.WHITE));
 
         return root;
     }
@@ -90,9 +88,5 @@ public class DetailsFragment extends Fragment {
             return null;
         }
         return getView().findViewById(R.id.header_image);
-    }
-
-    private void colorize(View view, Bitmap photo) {
-
     }
 }

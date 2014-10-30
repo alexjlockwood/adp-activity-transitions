@@ -17,8 +17,10 @@ import android.widget.ImageView;
 
 import com.adp.activity.transitions.util.CircularReveal;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.adp.activity.transitions.MainActivity.EXTRA_CURRENT_ITEM_POSITION;
 import static com.adp.activity.transitions.MainActivity.EXTRA_OLD_ITEM_POSITION;
@@ -41,8 +43,6 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
             LOG("onMapSharedElements(List<String>, Map<String, View>)", mIsReturning);
             if (mIsReturning && mCurrentPosition != mOriginalPosition) {
-                names.clear();
-                sharedElements.clear();
                 final View sharedView = mAdapter.getCurrentDetailsFragment().getSharedView();
                 if (sharedView == null) {
                     // If shared view is null, then it has likely been scrolled off screen and
@@ -54,6 +54,9 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
                     sharedElements.put(sharedView.getTransitionName(), sharedView);
                 }
             }
+
+            LOG("=== names: " + names.toString(), mIsReturning);
+            LOG("=== sharedElements: " + makeString(sharedElements.keySet()), mIsReturning);
         }
 
         @Override
@@ -174,6 +177,22 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
     private static void LOG(String message, boolean isReturning) {
         if (DEBUG) {
             Log.i(TAG, String.format("%s: %s", isReturning ? "RETURNING" : "ENTERING", message));
+        }
+    }
+
+    private static String makeString(Set<String> set) {
+        Iterator<String> i = set.iterator();
+        if (!i.hasNext())
+            return "[]";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        while (true) {
+            String e = i.next();
+            sb.append(e);
+            if (!i.hasNext())
+                return sb.append(']').toString();
+            sb.append(", ");
         }
     }
 }
