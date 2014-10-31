@@ -15,8 +15,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.adp.activity.transitions.util.CircularReveal;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +58,8 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         }
 
         @Override
-        public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+        public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements,
+                                         List<View> sharedElementSnapshots) {
             LOG("onSharedElementStart(List<String>, List<View>, List<View>)", mIsReturning);
             if (!mIsReturning) {
                 getWindow().setEnterTransition(makeEnterTransition(sharedElements.get(0)));
@@ -73,12 +72,14 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
 
         // Play a circular reveal animation starting beneath the shared element.
         Transition circularReveal = new CircularReveal(sharedElement);
-        circularReveal.addTarget(R.id.reveal_container); // TODO: is it OK to add target by ID or should we add a specific view instead?
+        // TODO: is it OK to add target by ID or should we add a specific view instead?
+        circularReveal.addTarget(R.id.reveal_container);
         enterTransition.addTransition(circularReveal);
 
         // Slide the cards in through the bottom of the screen.
         Transition cardSlide = new Slide(Gravity.BOTTOM);
-        cardSlide.addTarget(R.id.text_container); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        cardSlide.addTarget(R.id.text_container);
         enterTransition.addTransition(cardSlide);
 
         mBackgroundImage = (ImageView) findViewById(R.id.background_image);
@@ -98,14 +99,16 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
 
         // Slide and fade the circular reveal container off the top of the screen.
         TransitionSet slideFade = new TransitionSet();
-        slideFade.addTarget(R.id.reveal_container);  // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        slideFade.addTarget(R.id.reveal_container);
         slideFade.addTransition(new Slide(Gravity.TOP));
         slideFade.addTransition(new Fade());
         returnTransition.addTransition(slideFade);
 
         // Slide the cards off the bottom of the screen.
         Transition cardSlide = new Slide(Gravity.BOTTOM);
-        cardSlide.addTarget(R.id.text_container); // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        // TODO: is it OK to add target by ID or should we add a specific set of views instead?
+        cardSlide.addTarget(R.id.text_container);
         returnTransition.addTransition(cardSlide);
 
         return returnTransition;
@@ -182,16 +185,17 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
 
     private static String makeString(Set<String> set) {
         Iterator<String> i = set.iterator();
-        if (!i.hasNext())
+        if (!i.hasNext()) {
             return "[]";
-
+        }
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         while (true) {
             String e = i.next();
             sb.append(e);
-            if (!i.hasNext())
+            if (!i.hasNext()) {
                 return sb.append(']').toString();
+            }
             sb.append(", ");
         }
     }

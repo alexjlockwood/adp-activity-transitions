@@ -27,11 +27,16 @@ public class MainActivity extends Activity {
 
     static final String EXTRA_CURRENT_ITEM_POSITION = "extra_current_item_position";
     static final String EXTRA_OLD_ITEM_POSITION = "extra_old_item_position";
-    static final int[] IMAGES = {R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
-            R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
-            R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600};
-    static final String[] CAPTIONS = {"Radiohead #1", "Radiohead #2", "Radiohead #3", "Radiohead #4",
-            "Radiohead #5", "Radiohead #6", "Radiohead #7", "Radiohead #8"};
+    static final int[] IMAGES = {
+            R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
+            R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
+            R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
+            R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
+    };
+    static final String[] CAPTIONS = {
+            "Radiohead #1", "Radiohead #2", "Radiohead #3", "Radiohead #4",
+            "Radiohead #5", "Radiohead #6", "Radiohead #7", "Radiohead #8",
+    };
 
     private RecyclerView mRecyclerView;
     private Bundle mTmpState;
@@ -67,7 +72,8 @@ public class MainActivity extends Activity {
             View decor = getWindow().getDecorView();
             View navigationBar = decor.findViewById(android.R.id.navigationBarBackground);
             View statusBar = decor.findViewById(android.R.id.statusBarBackground);
-            View actionBar = decor.findViewById(getResources().getIdentifier("action_bar_container", "id", "android"));
+            int actionBarId = getResources().getIdentifier("action_bar_container", "id", "android");
+            View actionBar = decor.findViewById(actionBarId);
 
             if (!mIsReentering) {
                 names.add("navigationBar");
@@ -90,12 +96,14 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+        public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements,
+                                         List<View> sharedElementSnapshots) {
             LOG("onSharedElementStart(List<String>, List<View>, List<View>)", mIsReentering);
         }
 
         @Override
-        public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+        public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements,
+                                       List<View> sharedElementSnapshots) {
             LOG("onSharedElementEnd(List<String>, List<View>, List<View>)", mIsReentering);
         }
     };
@@ -202,16 +210,17 @@ public class MainActivity extends Activity {
 
     private static String makeString(Set<String> set) {
         Iterator<String> i = set.iterator();
-        if (!i.hasNext())
+        if (!i.hasNext()) {
             return "[]";
-
+        }
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         while (true) {
             String e = i.next();
             sb.append(e);
-            if (!i.hasNext())
+            if (!i.hasNext()) {
                 return sb.append(']').toString();
+            }
             sb.append(", ");
         }
     }

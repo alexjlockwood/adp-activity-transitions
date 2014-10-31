@@ -21,14 +21,8 @@ public class DetailsFragment extends Fragment {
     private static final SparseArray<Bitmap> BITMAP_CACHE = new SparseArray<>();
 
     private static final int[] BACKGROUND_IMAGES = {
-            R.drawable.thom1,
-            R.drawable.thom2,
-            R.drawable.thom3,
-            R.drawable.thom4,
-            R.drawable.thom5,
-            R.drawable.thom6,
-            R.drawable.thom6,
-            R.drawable.thom6,
+            R.drawable.thom1, R.drawable.thom2, R.drawable.thom3, R.drawable.thom4,
+            R.drawable.thom5, R.drawable.thom6, R.drawable.thom6, R.drawable.thom6,
     };
 
     public static DetailsFragment newInstance(int position) {
@@ -47,7 +41,6 @@ public class DetailsFragment extends Fragment {
         ImageView backgroundImage = (ImageView) revealContainer.findViewById(R.id.background_image);
         View infoText = root.findViewById(R.id.text_container);
         TextView titleText = (TextView) infoText.findViewById(R.id.title);
-        TextView descText = (TextView) infoText.findViewById(R.id.description);
 
         int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
         headerImage.setTransitionName(MainActivity.CAPTIONS[selectedPosition]);
@@ -74,8 +67,9 @@ public class DetailsFragment extends Fragment {
             backgroundImage.setImageBitmap(bitmap);
         }
 
+//        TextView descText = (TextView) infoText.findViewById(R.id.description);
 //        Palette palette = Palette.generate(bitmap, 24);
-        //getActivity().getWindow().setBackgroundDrawable(new ColorDrawable(palette.getDarkMutedColor(Color.WHITE)));
+//        getActivity().getWindow().setBackgroundDrawable(new ColorDrawable(palette.getDarkMutedColor(Color.WHITE)));
 //        titleText.setTextColor(palette.getDarkVibrantColor(Color.BLACK));
 //        descText.setTextColor(palette.getVibrantColor(Color.BLACK));
 //        infoText.setBackgroundColor(palette.getLightMutedColor(Color.WHITE));
