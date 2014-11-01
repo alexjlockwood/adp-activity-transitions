@@ -2,8 +2,10 @@ package com.adp.activity.transitions;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class DetailsFragment extends Fragment {
@@ -25,10 +28,12 @@ public class DetailsFragment extends Fragment {
             R.drawable.thom5, R.drawable.thom6, R.drawable.thom6, R.drawable.thom6,
     };
 
+    private ScrollView mScrollView;
+
     public static DetailsFragment newInstance(int position) {
-        final Bundle args = new Bundle();
+        Bundle args = new Bundle();
         args.putInt(ARG_SELECTED_IMAGE_POSITION, position);
-        final DetailsFragment fragment = new DetailsFragment();
+        DetailsFragment fragment = new DetailsFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -36,6 +41,7 @@ public class DetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_details, container, false);
+        mScrollView = (ScrollView) root.findViewById(R.id.scroll_view);
         View revealContainer = root.findViewById(R.id.reveal_container);
         ImageView headerImage = (ImageView) revealContainer.findViewById(R.id.header_image);
         ImageView backgroundImage = (ImageView) revealContainer.findViewById(R.id.background_image);
@@ -77,12 +83,22 @@ public class DetailsFragment extends Fragment {
         return root;
     }
 
-    // TODO: need to reimplement this so that it returns null when the image is off screen.
-    @Nullable // Might return null if the header image is no longer on screen.
+    @Nullable // Returns null if the header image is no longer on screen.
     public View getSharedView() {
         if (getView() == null) {
             return null;
         }
-        return getView().findViewById(R.id.header_image);
+        View view = getView().findViewById(R.id.header_image);
+        if (view == null || !isViewInScrollBounds(view)) {
+            return null;
+        }
+        return view;
     }
+
+    private boolean isViewInScrollBounds(@NonNull View view) {
+        Rect scrollBounds = new Rect();
+        mScrollView.getHitRect(scrollBounds);
+        return view.getLocalVisibleRect(scrollBounds);
+    }
+
 }

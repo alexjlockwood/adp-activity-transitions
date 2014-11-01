@@ -52,14 +52,14 @@ public class MainActivity extends Activity {
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
             LOG("onMapSharedElements(List<String>, Map<String, View>)", mIsReentering);
             if (mTmpState != null) {
-                final int oldPosition = mTmpState.getInt(EXTRA_OLD_ITEM_POSITION);
-                final int currentPosition = mTmpState.getInt(EXTRA_CURRENT_ITEM_POSITION);
+                int oldPosition = mTmpState.getInt(EXTRA_OLD_ITEM_POSITION);
+                int currentPosition = mTmpState.getInt(EXTRA_CURRENT_ITEM_POSITION);
                 if (currentPosition != oldPosition) {
                     // If currentPosition != oldPosition the user must have swiped to a different
                     // page in the DetailsActivity. We must update the shared element so that the
                     // correct one falls into place.
-                    final String newTransitionName = CAPTIONS[currentPosition];
-                    final View newSharedView = mRecyclerView.findViewWithTag(newTransitionName);
+                    String newTransitionName = CAPTIONS[currentPosition];
+                    View newSharedView = mRecyclerView.findViewWithTag(newTransitionName);
                     if (newSharedView != null) {
                         names.clear();
                         names.add(newTransitionName);
@@ -76,19 +76,28 @@ public class MainActivity extends Activity {
             View actionBar = decor.findViewById(actionBarId);
 
             if (!mIsReentering) {
-                names.add("navigationBar");
-                sharedElements.put("navigationBar", navigationBar);
-                names.add("statusBar");
-                sharedElements.put("statusBar", statusBar);
-                names.add("actionBar");
-                sharedElements.put("actionBar", actionBar);
+                if (navigationBar != null) {
+                    navigationBar.setTransitionName("navigationBar");
+                    names.add(navigationBar.getTransitionName());
+                    sharedElements.put(navigationBar.getTransitionName(), navigationBar);
+                }
+                if (statusBar != null) {
+                    statusBar.setTransitionName("statusBar");
+                    names.add(statusBar.getTransitionName());
+                    sharedElements.put(statusBar.getTransitionName(), statusBar);
+                }
+                if (actionBar != null) {
+                    actionBar.setTransitionName("actionBar");
+                    names.add(actionBar.getTransitionName());
+                    sharedElements.put(actionBar.getTransitionName(), actionBar);
+                }
             } else {
-                names.remove("actionBar");
-                sharedElements.remove("actionBar");
-                names.remove("statusBar");
-                sharedElements.remove("statusBar");
                 names.remove("navigationBar");
                 sharedElements.remove("navigationBar");
+                names.remove("statusBar");
+                sharedElements.remove("statusBar");
+                names.remove("actionBar");
+                sharedElements.remove("actionBar");
             }
 
             LOG("=== names: " + names.toString(), mIsReentering);
@@ -162,7 +171,7 @@ public class MainActivity extends Activity {
         @Override
         public void onClick(View v) {
             LOG("startActivity(Intent, Bundle)", mIsReentering);
-            final Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+            Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
             intent.putExtra(EXTRA_CURRENT_ITEM_POSITION, mPosition);
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(
                     MainActivity.this, mImage, mImage.getTransitionName()).toBundle());
