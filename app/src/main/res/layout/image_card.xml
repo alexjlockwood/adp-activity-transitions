@@ -11,8 +11,5 @@
         style="@style/CardPhoto"
         tools:ignore="ContentDescription"/>
 
-    <TextView
-        android:id="@+id/text"
-        style="@style/CardTitle"/>
 </android.support.v7.widget.CardView>
 

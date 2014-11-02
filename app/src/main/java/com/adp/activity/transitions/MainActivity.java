@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.Iterator;
 import java.util.List;
@@ -28,14 +27,14 @@ public class MainActivity extends Activity {
     static final String EXTRA_CURRENT_ITEM_POSITION = "extra_current_item_position";
     static final String EXTRA_OLD_ITEM_POSITION = "extra_old_item_position";
     static final int[] IMAGES = {
-            R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
-            R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
-            R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
-            R.drawable.radiohead_backwards_600, R.drawable.radiohead_backwards_600,
+            R.drawable.pablo_honey, R.drawable.the_bends,
+            R.drawable.ok_computer, R.drawable.kid_a,
+            R.drawable.amnesiac, R.drawable.hail_to_the_thief,
+            R.drawable.in_rainbows, R.drawable.the_king_of_limbs,
     };
     static final String[] CAPTIONS = {
-            "Radiohead #1", "Radiohead #2", "Radiohead #3", "Radiohead #4",
-            "Radiohead #5", "Radiohead #6", "Radiohead #7", "Radiohead #8",
+            "Pablo Honey", "The Bends", "OK Computer", "Kid A",
+            "Amnesiac", "Hail to the Thief", "In Rainbows", "The King of Limbs",
     };
 
     private RecyclerView mRecyclerView;
@@ -150,21 +149,18 @@ public class MainActivity extends Activity {
 
     private class CardHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView mImage;
-        private final TextView mTextView;
         private int mPosition;
 
         public CardHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             mImage = (ImageView) itemView.findViewById(R.id.image);
-            mTextView = (TextView) itemView.findViewById(R.id.text);
-            mTextView.setOnClickListener(this);
         }
 
         public void bind(int position) {
             mImage.setImageResource(IMAGES[position]);
             mImage.setTransitionName(CAPTIONS[position]);
             mImage.setTag(CAPTIONS[position]);
-            mTextView.setText(CAPTIONS[position]);
             mPosition = position;
         }
 

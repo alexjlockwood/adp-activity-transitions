@@ -24,8 +24,10 @@ public class DetailsFragment extends Fragment {
     private static final SparseArray<Bitmap> BITMAP_CACHE = new SparseArray<>();
 
     private static final int[] BACKGROUND_IMAGES = {
-            R.drawable.thom1, R.drawable.thom2, R.drawable.thom3, R.drawable.thom4,
-            R.drawable.thom5, R.drawable.thom6, R.drawable.thom6, R.drawable.thom6,
+            R.drawable.jonny_drums, R.drawable.thom2,
+            R.drawable.thom_yell, R.drawable.thom3,
+            R.drawable.thom4, R.drawable.thom5,
+            R.drawable.jonny_thom, R.drawable.thom6,
     };
 
     private ScrollView mScrollView;

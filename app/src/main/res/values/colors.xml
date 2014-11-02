@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="photo_tint">#7f505050</color>
+    <color name="background_photo_tint">#4f808080</color>
+    <color name="main_photo_tint">#2f505050</color>
 
     <color name="red_50">#fde0dc</color>
     <color name="red_100">#f9bdbb</color>

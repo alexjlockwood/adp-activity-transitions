@@ -2,36 +2,25 @@
 
     <style name="Card">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">200dp</item>
-        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:foreground">?android:selectableItemBackground</item>
     </style>
 
     <style name="CardPhoto">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:tint">@color/photo_tint</item>
-        <item name="android:scaleType">centerCrop</item>
-    </style>
-
-    <style name="CardTitle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:textColor">#fff</item>
-        <item name="android:textSize">28sp</item>
-        <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:gravity">bottom|left</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingBottom">8dp</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:tint">@color/main_photo_tint</item>
+        <item name="android:scaleType">fitCenter</item>
     </style>
 
     <style name="DetailsBackgroundPhoto">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:tint">@color/photo_tint</item>
-        <item name="android:scaleType">fitCenter</item>
+        <item name="android:tint">@color/background_photo_tint</item>
+        <item name="android:scaleType">centerCrop</item>
     </style>
 
     <style name="DetailsHeaderPhoto">
@@ -40,8 +29,8 @@
         <item name="android:layout_gravity">left|bottom</item>
         <item name="android:layout_marginLeft">16dp</item>
         <item name="android:layout_marginBottom">16dp</item>
-        <item name="android:tint">@color/photo_tint</item>
-        <item name="android:scaleType">center</item>
+        <item name="android:tint">@color/main_photo_tint</item>
+        <item name="android:scaleType">fitCenter</item>
     </style>
 
     <style name="DetailsTextTitle">
@@ -50,6 +39,7 @@
         <item name="android:layout_margin">24dp</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textSize">40sp</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Material.Title</item>
     </style>
 
     <style name="DetailsTextDescription">
@@ -62,6 +52,7 @@
         <item name="android:lineSpacingMultiplier">1.2</item>
         <item name="android:text">@string/lorem</item>
         <item name="android:textSize">20sp</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Material.Medium</item>
     </style>
 
 </resources>
