@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import static com.adp.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
@@ -24,8 +23,6 @@ public class DetailsFragment extends Fragment {
 
     private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
     private static final SparseArray<Bitmap> BITMAP_CACHE = new SparseArray<>();
-
-    private ScrollView mScrollView;
 
     public static DetailsFragment newInstance(int position) {
         Bundle args = new Bundle();
@@ -78,7 +75,7 @@ public class DetailsFragment extends Fragment {
     @Nullable
     public View getSharedElement() {
         View view = getView().findViewById(R.id.header_image);
-        if (Utils.isViewInBounds(mScrollView, view)) {
+        if (Utils.isViewInBounds(getView().findViewById(R.id.scroll_view), view)) {
                 return view;
         }
         return null;
