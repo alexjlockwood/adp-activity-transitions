@@ -2,10 +2,8 @@ package com.adp.activity.transitions;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -16,19 +14,16 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import static com.adp.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
+import static com.adp.activity.transitions.Utils.RADIOHEAD_ALBUM_NAMES;
+import static com.adp.activity.transitions.Utils.RADIOHEAD_BACKGROUND_IDS;
+
 public class DetailsFragment extends Fragment {
     private static final String TAG = "DetailsFragment";
     private static final boolean DEBUG = true;
 
     private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
     private static final SparseArray<Bitmap> BITMAP_CACHE = new SparseArray<>();
-
-    private static final int[] BACKGROUND_IMAGES = {
-            R.drawable.jonny_drums, R.drawable.thom2,
-            R.drawable.thom_yell, R.drawable.thom3,
-            R.drawable.thom4, R.drawable.thom5,
-            R.drawable.jonny_thom, R.drawable.thom6,
-    };
 
     private ScrollView mScrollView;
 
@@ -43,17 +38,16 @@ public class DetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_details, container, false);
-        mScrollView = (ScrollView) root.findViewById(R.id.scroll_view);
         View revealContainer = root.findViewById(R.id.reveal_container);
         ImageView headerImage = (ImageView) revealContainer.findViewById(R.id.header_image);
-        ImageView backgroundImage = (ImageView) revealContainer.findViewById(R.id.background_image);
         View infoText = root.findViewById(R.id.text_container);
         TextView titleText = (TextView) infoText.findViewById(R.id.title);
+        ImageView backgroundImage = (ImageView) revealContainer.findViewById(R.id.background_image);
 
         int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
-        headerImage.setTransitionName(MainActivity.CAPTIONS[selectedPosition]);
-        headerImage.setImageResource(MainActivity.IMAGES[selectedPosition]);
-        titleText.setText(MainActivity.CAPTIONS[selectedPosition]);
+        headerImage.setTransitionName(RADIOHEAD_ALBUM_NAMES[selectedPosition]);
+        headerImage.setImageResource(RADIOHEAD_ALBUM_IDS[selectedPosition]);
+        titleText.setText(RADIOHEAD_ALBUM_NAMES[selectedPosition]);
 
         root.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -64,43 +58,29 @@ public class DetailsFragment extends Fragment {
             }
         });
 
-
-        int imageResource = BACKGROUND_IMAGES[selectedPosition];
+        int imageResource = RADIOHEAD_BACKGROUND_IDS[selectedPosition];
         Bitmap bitmap = BITMAP_CACHE.get(imageResource);
         if (BITMAP_CACHE.get(imageResource) == null) {
-            backgroundImage.setImageResource(BACKGROUND_IMAGES[selectedPosition]);
+            backgroundImage.setImageResource(RADIOHEAD_BACKGROUND_IDS[selectedPosition]);
             bitmap = (((BitmapDrawable) backgroundImage.getDrawable()).getBitmap());
             BITMAP_CACHE.put(imageResource, bitmap);
         } else {
             backgroundImage.setImageBitmap(bitmap);
         }
 
-//        TextView descText = (TextView) infoText.findViewById(R.id.description);
-//        Palette palette = Palette.generate(bitmap, 24);
-//        getActivity().getWindow().setBackgroundDrawable(new ColorDrawable(palette.getDarkMutedColor(Color.WHITE)));
-//        titleText.setTextColor(palette.getDarkVibrantColor(Color.BLACK));
-//        descText.setTextColor(palette.getVibrantColor(Color.BLACK));
-//        infoText.setBackgroundColor(palette.getLightMutedColor(Color.WHITE));
-
         return root;
     }
 
-    @Nullable // Returns null if the header image is no longer on screen.
-    public View getSharedView() {
-        if (getView() == null) {
-            return null;
-        }
+    /**
+     * Returns the shared element that should be transitioned back to the previous Activity,
+     * or null if the view is not visible on screen.
+     */
+    @Nullable
+    public View getSharedElement() {
         View view = getView().findViewById(R.id.header_image);
-        if (view == null || !isViewInScrollBounds(view)) {
-            return null;
+        if (Utils.isViewInBounds(mScrollView, view)) {
+                return view;
         }
-        return view;
+        return null;
     }
-
-    private boolean isViewInScrollBounds(@NonNull View view) {
-        Rect scrollBounds = new Rect();
-        mScrollView.getHitRect(scrollBounds);
-        return view.getLocalVisibleRect(scrollBounds);
-    }
-
 }

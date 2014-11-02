@@ -5,6 +5,8 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
+import static com.adp.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
+
 public class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {
     private DetailsFragment mCurrentFragment;
 
@@ -19,7 +21,7 @@ public class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return MainActivity.IMAGES.length;
+        return RADIOHEAD_ALBUM_IDS.length;
     }
 
     @Override

@@ -15,10 +15,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
+import static com.adp.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
+import static com.adp.activity.transitions.Utils.RADIOHEAD_ALBUM_NAMES;
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
@@ -26,16 +27,6 @@ public class MainActivity extends Activity {
 
     static final String EXTRA_CURRENT_ITEM_POSITION = "extra_current_item_position";
     static final String EXTRA_OLD_ITEM_POSITION = "extra_old_item_position";
-    static final int[] IMAGES = {
-            R.drawable.pablo_honey, R.drawable.the_bends,
-            R.drawable.ok_computer, R.drawable.kid_a,
-            R.drawable.amnesiac, R.drawable.hail_to_the_thief,
-            R.drawable.in_rainbows, R.drawable.the_king_of_limbs,
-    };
-    static final String[] CAPTIONS = {
-            "Pablo Honey", "The Bends", "OK Computer", "Kid A",
-            "Amnesiac", "Hail to the Thief", "In Rainbows", "The King of Limbs",
-    };
 
     private RecyclerView mRecyclerView;
     private Bundle mTmpState;
@@ -50,14 +41,14 @@ public class MainActivity extends Activity {
         @Override
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
             LOG("onMapSharedElements(List<String>, Map<String, View>)", mIsReentering);
-            if (mTmpState != null) {
+            if (mIsReentering) {
                 int oldPosition = mTmpState.getInt(EXTRA_OLD_ITEM_POSITION);
                 int currentPosition = mTmpState.getInt(EXTRA_CURRENT_ITEM_POSITION);
                 if (currentPosition != oldPosition) {
                     // If currentPosition != oldPosition the user must have swiped to a different
                     // page in the DetailsActivity. We must update the shared element so that the
                     // correct one falls into place.
-                    String newTransitionName = CAPTIONS[currentPosition];
+                    String newTransitionName = RADIOHEAD_ALBUM_NAMES[currentPosition];
                     View newSharedView = mRecyclerView.findViewWithTag(newTransitionName);
                     if (newSharedView != null) {
                         names.clear();
@@ -66,6 +57,7 @@ public class MainActivity extends Activity {
                         sharedElements.put(newTransitionName, newSharedView);
                     }
                 }
+                mTmpState = null;
             }
 
             View decor = getWindow().getDecorView();
@@ -100,7 +92,7 @@ public class MainActivity extends Activity {
             }
 
             LOG("=== names: " + names.toString(), mIsReentering);
-            LOG("=== sharedElements: " + makeString(sharedElements.keySet()), mIsReentering);
+            LOG("=== sharedElements: " + Utils.setToString(sharedElements.keySet()), mIsReentering);
         }
 
         @Override
@@ -120,13 +112,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setExitSharedElementCallback(mCallback);
 
         Resources res = getResources();
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, res.getInteger(R.integer.num_columns)));
         mRecyclerView.setAdapter(new CardAdapter());
-
-        setExitSharedElementCallback(mCallback);
     }
 
     private class CardAdapter extends RecyclerView.Adapter<CardHolder> {
@@ -143,7 +134,7 @@ public class MainActivity extends Activity {
 
         @Override
         public int getItemCount() {
-            return IMAGES.length;
+            return RADIOHEAD_ALBUM_IDS.length;
         }
     }
 
@@ -158,15 +149,16 @@ public class MainActivity extends Activity {
         }
 
         public void bind(int position) {
-            mImage.setImageResource(IMAGES[position]);
-            mImage.setTransitionName(CAPTIONS[position]);
-            mImage.setTag(CAPTIONS[position]);
+            mImage.setImageResource(RADIOHEAD_ALBUM_IDS[position]);
+            mImage.setTransitionName(RADIOHEAD_ALBUM_NAMES[position]);
+            mImage.setTag(RADIOHEAD_ALBUM_NAMES[position]);
             mPosition = position;
         }
 
         @Override
         public void onClick(View v) {
-            LOG("startActivity(Intent, Bundle)", mIsReentering);
+            mIsReentering = false;
+            LOG("startActivity(Intent, Bundle)", false);
             Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
             intent.putExtra(EXTRA_CURRENT_ITEM_POSITION, mPosition);
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(
@@ -176,13 +168,11 @@ public class MainActivity extends Activity {
 
     @Override
     public void onActivityReenter(int requestCode, Intent data) {
-        mIsReentering = true;
         LOG("onActivityReenter(int, Intent)", true);
         super.onActivityReenter(requestCode, data);
-        if (data != null && data.getExtras() != null) {
-            mTmpState = new Bundle(data.getExtras());
-            mRecyclerView.scrollToPosition(mTmpState.getInt(EXTRA_CURRENT_ITEM_POSITION));
-        }
+        mIsReentering = true;
+        mTmpState = new Bundle(data.getExtras());
+        mRecyclerView.scrollToPosition(mTmpState.getInt(EXTRA_CURRENT_ITEM_POSITION));
         postponeEnterTransition();
         mRecyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -194,39 +184,9 @@ public class MainActivity extends Activity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mTmpState = null;
-        mIsReentering = false;
-    }
-
-    private static void LOG(String message) {
-        if (DEBUG) {
-            Log.i(TAG, message);
-        }
-    }
-
     private static void LOG(String message, boolean isReentering) {
         if (DEBUG) {
             Log.i(TAG, String.format("%s: %s", isReentering ? "REENTERING" : "EXITING", message));
-        }
-    }
-
-    private static String makeString(Set<String> set) {
-        Iterator<String> i = set.iterator();
-        if (!i.hasNext()) {
-            return "[]";
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append('[');
-        while (true) {
-            String e = i.next();
-            sb.append(e);
-            if (!i.hasNext()) {
-                return sb.append(']').toString();
-            }
-            sb.append(", ");
         }
     }
 }
