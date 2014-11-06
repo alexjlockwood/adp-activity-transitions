@@ -75,6 +75,6 @@ public class CircularReveal extends Visibility {
         float endRadius = isExpanding ? fullRadius : 0f;
         float startRadius = isExpanding ? 0f : fullRadius;
         Animator animator = ViewAnimationUtils.createCircularReveal(view, width / 2, height / 2, startRadius, endRadius);
-        return new NoPauseAnimatorWrapper(animator);
+        return new IgnorePauseAnimator(animator);
     }
 }
