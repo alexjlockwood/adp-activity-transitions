@@ -38,7 +38,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
             LOG("onMapSharedElements(List<String>, Map<String, View>)", mIsReturning);
             if (mIsReturning) {
-                final View sharedView = mAdapter.getCurrentDetailsFragment().getSharedElement();
+                View sharedView = mAdapter.getCurrentDetailsFragment().getSharedElement();
                 if (sharedView == null) {
                     // If shared view is null, then it has likely been scrolled off screen and
                     // recycled. In this case we cancel the shared element transition and use
