@@ -93,6 +93,12 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         cardSlide.addTarget(rootView.findViewById(R.id.text_container));
         enterTransition.addTransition(cardSlide);
 
+        // Don't fade the navigation/status bars.
+        Transition fade = new Fade();
+        fade.excludeTarget(android.R.id.navigationBarBackground, true);
+        fade.excludeTarget(android.R.id.statusBarBackground, true);
+        enterTransition.addTransition(fade);
+
         final ImageView backgroundImage = (ImageView) rootView.findViewById(R.id.background_image);
         backgroundImage.setAlpha(0f);
         enterTransition.addListener(new TransitionListenerAdapter() {
@@ -161,7 +167,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         mIsReturning = true;
         getWindow().setReturnTransition(makeReturnTransition());
         Intent data = new Intent();
-        data.putExtra(EXTRA_OLD_ITEM_POSITION, getIntent().getIntExtra(EXTRA_CURRENT_ITEM_POSITION, 0));
+        data.putExtra(EXTRA_OLD_ITEM_POSITION, getIntent().getExtras().getInt(EXTRA_CURRENT_ITEM_POSITION));
         data.putExtra(EXTRA_CURRENT_ITEM_POSITION, mCurrentPosition);
         setResult(RESULT_OK, data);
         super.finishAfterTransition();

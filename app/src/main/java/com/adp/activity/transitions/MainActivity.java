@@ -34,11 +34,6 @@ public class MainActivity extends Activity {
 
     private final SharedElementCallback mCallback = new SharedElementCallback() {
         @Override
-        public void onRejectSharedElements(List<View> rejectedSharedElements) {
-            LOG("onMapSharedElements(List<View>)", mIsReentering);
-        }
-
-        @Override
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
             LOG("onMapSharedElements(List<String>, Map<String, View>)", mIsReentering);
             if (mIsReentering) {
@@ -172,7 +167,11 @@ public class MainActivity extends Activity {
         super.onActivityReenter(requestCode, data);
         mIsReentering = true;
         mTmpState = new Bundle(data.getExtras());
-        mRecyclerView.scrollToPosition(mTmpState.getInt(EXTRA_CURRENT_ITEM_POSITION));
+        int oldPosition = mTmpState.getInt(EXTRA_OLD_ITEM_POSITION);
+        int currentPosition = mTmpState.getInt(EXTRA_CURRENT_ITEM_POSITION);
+        if (oldPosition != currentPosition) {
+            mRecyclerView.scrollToPosition(currentPosition);
+        }
         postponeEnterTransition();
         mRecyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
