@@ -18,14 +18,6 @@ gen/
 
 # Ignore gradle files
 .gradle/
-app/build/*
-!app/build/outputs/
-app/build/outputs/*
-!app/build/outputs/proguard/
-app/build/outputs/proguard/*
-!app/build/outputs/proguard/release/
-app/build/outputs/proguard/release/*
-!app/build/outputs/proguard/release/mapping.txt
 /build/
 
 # Local configuration file (sdk path, etc)
