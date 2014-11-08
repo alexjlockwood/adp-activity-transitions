@@ -1,4 +1,4 @@
-package com.adp.activity.transitions;
+package com.alexjlockwood.activity.transitions;
 
 import android.app.Activity;
 import android.app.SharedElementCallback;
@@ -18,8 +18,8 @@ import android.widget.ImageView;
 import java.util.List;
 import java.util.Map;
 
-import static com.adp.activity.transitions.MainActivity.EXTRA_CURRENT_ITEM_POSITION;
-import static com.adp.activity.transitions.MainActivity.EXTRA_OLD_ITEM_POSITION;
+import static com.alexjlockwood.activity.transitions.MainActivity.EXTRA_CURRENT_ITEM_POSITION;
+import static com.alexjlockwood.activity.transitions.MainActivity.EXTRA_OLD_ITEM_POSITION;
 
 public class DetailsActivity extends Activity implements ViewPager.OnPageChangeListener {
     private static final String TAG = "DetailsActivity";

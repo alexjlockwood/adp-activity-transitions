@@ -1,11 +1,11 @@
-package com.adp.activity.transitions;
+package com.alexjlockwood.activity.transitions;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
-import static com.adp.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
+import static com.alexjlockwood.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
 
 public class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {
     private DetailsFragment mCurrentFragment;

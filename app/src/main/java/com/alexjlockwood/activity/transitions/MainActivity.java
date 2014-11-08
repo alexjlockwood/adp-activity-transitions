@@ -1,4 +1,4 @@
-package com.adp.activity.transitions;
+package com.alexjlockwood.activity.transitions;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -18,8 +18,8 @@ import android.widget.ImageView;
 import java.util.List;
 import java.util.Map;
 
-import static com.adp.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
-import static com.adp.activity.transitions.Utils.RADIOHEAD_ALBUM_NAMES;
+import static com.alexjlockwood.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
+import static com.alexjlockwood.activity.transitions.Utils.RADIOHEAD_ALBUM_NAMES;
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";

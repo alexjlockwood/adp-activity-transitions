@@ -1,4 +1,4 @@
-package com.adp.activity.transitions;
+package com.alexjlockwood.activity.transitions;
 
 import android.graphics.Rect;
 import android.support.annotation.NonNull;

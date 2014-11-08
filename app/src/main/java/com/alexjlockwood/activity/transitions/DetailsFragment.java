@@ -1,4 +1,4 @@
-package com.adp.activity.transitions;
+package com.alexjlockwood.activity.transitions;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -13,9 +13,9 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import static com.adp.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
-import static com.adp.activity.transitions.Utils.RADIOHEAD_ALBUM_NAMES;
-import static com.adp.activity.transitions.Utils.RADIOHEAD_BACKGROUND_IDS;
+import static com.alexjlockwood.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
+import static com.alexjlockwood.activity.transitions.Utils.RADIOHEAD_ALBUM_NAMES;
+import static com.alexjlockwood.activity.transitions.Utils.RADIOHEAD_BACKGROUND_IDS;
 
 public class DetailsFragment extends Fragment {
     private static final String TAG = "DetailsFragment";

@@ -1,4 +1,4 @@
-package com.adp.activity.transitions;
+package com.alexjlockwood.activity.transitions;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -57,10 +57,12 @@ public class CircularReveal extends Visibility {
         Path path = getPathMotion().getPath(startX, startY, endX, endY);
         Animator pathAnimation = ObjectAnimator.ofFloat(v, View.TRANSLATION_X, View.TRANSLATION_Y, path);
         Animator circularRevealAnimator = revealAnimator(v, v.getMeasuredWidth(), v.getMeasuredHeight(), isExpanding);
+
+        v.setAlpha(0f);
         circularRevealAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
-                v.setVisibility(isExpanding ? View.VISIBLE : View.INVISIBLE);
+            public void onAnimationStart(Animator animation) {
+                v.setAlpha(1f);
             }
         });
 

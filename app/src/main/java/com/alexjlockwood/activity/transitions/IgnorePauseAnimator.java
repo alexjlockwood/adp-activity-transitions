@@ -1,4 +1,4 @@
-package com.adp.activity.transitions;
+package com.alexjlockwood.activity.transitions;
 
 import android.animation.Animator;
 import android.animation.TimeInterpolator;
@@ -6,18 +6,6 @@ import android.animation.TimeInterpolator;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A wrapper that does not forward pause/resume calls to the wrapped animator. This class is
- * used to avoid b/17541275 when an animator that does not support pause is used in a window
- * transition (i.e. ViewAnimationUtils.createCircularReveal()).
- * <p/>
- * We must always return a reference to ourself and not the wrapped animator. So we must
- * keep track of listeners, register ourself as a listener to the wrapped animator and dispatch
- * events.
- * <p/>
- * Note that since we don't support pause, there's no point in keeping track of pause listeners.
- * Pause listeners registered with this animator will never be called.
- */
 public class IgnorePauseAnimator extends Animator implements Animator.AnimatorListener {
 
     private Animator mAnimator;
