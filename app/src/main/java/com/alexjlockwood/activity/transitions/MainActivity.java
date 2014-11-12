@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.ImageView;
 
 import java.util.List;
@@ -63,12 +64,10 @@ public class MainActivity extends Activity {
 
             if (!mIsReentering) {
                 if (navigationBar != null) {
-                    navigationBar.setTransitionName("navigationBar");
                     names.add(navigationBar.getTransitionName());
                     sharedElements.put(navigationBar.getTransitionName(), navigationBar);
                 }
                 if (statusBar != null) {
-                    statusBar.setTransitionName("statusBar");
                     names.add(statusBar.getTransitionName());
                     sharedElements.put(statusBar.getTransitionName(), statusBar);
                 }
@@ -78,10 +77,10 @@ public class MainActivity extends Activity {
                     sharedElements.put(actionBar.getTransitionName(), actionBar);
                 }
             } else {
-                names.remove("navigationBar");
-                sharedElements.remove("navigationBar");
-                names.remove("statusBar");
-                sharedElements.remove("statusBar");
+                names.remove(Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME);
+                sharedElements.remove(Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME);
+                names.remove(Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME);
+                sharedElements.remove(Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME);
                 names.remove("actionBar");
                 sharedElements.remove("actionBar");
             }
@@ -94,12 +93,23 @@ public class MainActivity extends Activity {
         public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements,
                                          List<View> sharedElementSnapshots) {
             LOG("onSharedElementStart(List<String>, List<View>, List<View>)", mIsReentering);
+            logSharedElementsInfo(sharedElementNames, sharedElements);
         }
 
         @Override
         public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements,
                                        List<View> sharedElementSnapshots) {
             LOG("onSharedElementEnd(List<String>, List<View>, List<View>)", mIsReentering);
+            logSharedElementsInfo(sharedElementNames, sharedElements);
+        }
+
+        private void logSharedElementsInfo(List<String> names, List<View> sharedElements) {
+            LOG("=== names: " + names.toString(), mIsReentering);
+            for (View view : sharedElements) {
+                int[] loc = new int[2];
+                view.getLocationInWindow(loc);
+                Log.i(TAG, "=== " + view.getTransitionName() + ": " + "(" + loc[0] + ", " + loc[1] + ")");
+            }
         }
     };
 
@@ -177,6 +187,8 @@ public class MainActivity extends Activity {
             @Override
             public boolean onPreDraw() {
                 mRecyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                // TODO: hack! not sure why, but requesting a layout pass is necessary in order to fix re-mapping + scrolling glitches!
+                mRecyclerView.requestLayout();
                 startPostponedEnterTransition();
                 return true;
             }

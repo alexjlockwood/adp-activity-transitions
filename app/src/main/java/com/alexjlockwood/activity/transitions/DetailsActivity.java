@@ -63,7 +63,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
                                          List<View> sharedElementSnapshots) {
             LOG("onSharedElementStart(List<String>, List<View>, List<View>)", mIsReturning);
             if (!mIsReturning) {
-                getWindow().setEnterTransition(makeEnterTransition(sharedElements.get(0)));
+                getWindow().setEnterTransition(makeEnterTransition(getSharedElement(sharedElements)));
             }
         }
 
@@ -74,6 +74,15 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
             if (mIsReturning) {
                 getWindow().setReturnTransition(makeReturnTransition());
             }
+        }
+
+        private View getSharedElement(List<View> sharedElements) {
+            for (final View view : sharedElements) {
+                if (view instanceof ImageView) {
+                    return view;
+                }
+            }
+            return null;
         }
     };
 
