@@ -2,7 +2,6 @@ package com.alexjlockwood.activity.transitions;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.SparseArray;
@@ -13,9 +12,9 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import static com.alexjlockwood.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
+import com.squareup.picasso.Picasso;
+
 import static com.alexjlockwood.activity.transitions.Utils.RADIOHEAD_ALBUM_NAMES;
-import static com.alexjlockwood.activity.transitions.Utils.RADIOHEAD_BACKGROUND_IDS;
 
 public class DetailsFragment extends Fragment {
     private static final String TAG = "DetailsFragment";
@@ -43,7 +42,9 @@ public class DetailsFragment extends Fragment {
 
         int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
         headerImage.setTransitionName(RADIOHEAD_ALBUM_NAMES[selectedPosition]);
-        headerImage.setImageResource(RADIOHEAD_ALBUM_IDS[selectedPosition]);
+        //headerImage.setImageResource(RADIOHEAD_ALBUM_IDS[selectedPosition]);
+        Picasso.with(getActivity()).load(Utils.RADIOHEAD_ALBUM_URLS[selectedPosition]).into(headerImage);
+
         titleText.setText(RADIOHEAD_ALBUM_NAMES[selectedPosition]);
 
         root.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -55,15 +56,16 @@ public class DetailsFragment extends Fragment {
             }
         });
 
-        int imageResource = RADIOHEAD_BACKGROUND_IDS[selectedPosition];
-        Bitmap bitmap = BITMAP_CACHE.get(imageResource);
-        if (BITMAP_CACHE.get(imageResource) == null) {
-            backgroundImage.setImageResource(RADIOHEAD_BACKGROUND_IDS[selectedPosition]);
-            bitmap = (((BitmapDrawable) backgroundImage.getDrawable()).getBitmap());
-            BITMAP_CACHE.put(imageResource, bitmap);
-        } else {
-            backgroundImage.setImageBitmap(bitmap);
-        }
+//        int imageResource = RADIOHEAD_BACKGROUND_IDS[selectedPosition];
+//        Bitmap bitmap = BITMAP_CACHE.get(imageResource);
+//        if (BITMAP_CACHE.get(imageResource) == null) {
+//            backgroundImage.setImageResource(RADIOHEAD_BACKGROUND_IDS[selectedPosition]);
+//            bitmap = (((BitmapDrawable) backgroundImage.getDrawable()).getBitmap());
+//            BITMAP_CACHE.put(imageResource, bitmap);
+//        } else {
+//            backgroundImage.setImageBitmap(bitmap);
+//        }
+        Picasso.with(getActivity()).load(Utils.RADIOHEAD_BACKGROUND_URLS[selectedPosition]).into(backgroundImage);
 
         return root;
     }

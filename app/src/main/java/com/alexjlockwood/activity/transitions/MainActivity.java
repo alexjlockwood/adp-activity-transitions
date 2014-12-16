@@ -16,10 +16,11 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 import java.util.Map;
 
-import static com.alexjlockwood.activity.transitions.Utils.RADIOHEAD_ALBUM_IDS;
 import static com.alexjlockwood.activity.transitions.Utils.RADIOHEAD_ALBUM_NAMES;
 
 public class MainActivity extends Activity {
@@ -139,7 +140,7 @@ public class MainActivity extends Activity {
 
         @Override
         public int getItemCount() {
-            return RADIOHEAD_ALBUM_IDS.length;
+            return Utils.RADIOHEAD_ALBUM_URLS.length;
         }
     }
 
@@ -154,7 +155,8 @@ public class MainActivity extends Activity {
         }
 
         public void bind(int position) {
-            mImage.setImageResource(RADIOHEAD_ALBUM_IDS[position]);
+            //mImage.setImageResource(RADIOHEAD_ALBUM_IDS[position]);
+            Picasso.with(mImage.getContext()).load(Utils.RADIOHEAD_ALBUM_URLS[position]).into(mImage);
             mImage.setTransitionName(RADIOHEAD_ALBUM_NAMES[position]);
             mImage.setTag(RADIOHEAD_ALBUM_NAMES[position]);
             mPosition = position;

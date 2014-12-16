@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <FrameLayout
+            android:layout_weight="1"
             android:id="@+id/reveal_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,6 +31,7 @@
         </FrameLayout>
 
         <LinearLayout
+            android:layout_weight="2"
             android:id="@+id/text_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
