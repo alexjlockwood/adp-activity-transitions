@@ -43,7 +43,7 @@ public class DetailsFragment extends Fragment {
         int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
         headerImage.setTransitionName(RADIOHEAD_ALBUM_NAMES[selectedPosition]);
         //headerImage.setImageResource(RADIOHEAD_ALBUM_IDS[selectedPosition]);
-        Picasso.with(getActivity()).load(Utils.RADIOHEAD_ALBUM_URLS[selectedPosition]).into(headerImage);
+        Picasso.with(getActivity()).load(Utils.RADIOHEAD_ALBUM_URLS[selectedPosition]).fit().into(headerImage);
 
         titleText.setText(RADIOHEAD_ALBUM_NAMES[selectedPosition]);
 
@@ -56,16 +56,7 @@ public class DetailsFragment extends Fragment {
             }
         });
 
-//        int imageResource = RADIOHEAD_BACKGROUND_IDS[selectedPosition];
-//        Bitmap bitmap = BITMAP_CACHE.get(imageResource);
-//        if (BITMAP_CACHE.get(imageResource) == null) {
-//            backgroundImage.setImageResource(RADIOHEAD_BACKGROUND_IDS[selectedPosition]);
-//            bitmap = (((BitmapDrawable) backgroundImage.getDrawable()).getBitmap());
-//            BITMAP_CACHE.put(imageResource, bitmap);
-//        } else {
-//            backgroundImage.setImageBitmap(bitmap);
-//        }
-        Picasso.with(getActivity()).load(Utils.RADIOHEAD_BACKGROUND_URLS[selectedPosition]).into(backgroundImage);
+        Picasso.with(getActivity()).load(Utils.RADIOHEAD_BACKGROUND_URLS[selectedPosition]).fit().centerCrop().into(backgroundImage);
 
         return root;
     }

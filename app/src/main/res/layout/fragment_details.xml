@@ -12,39 +12,59 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:layout_weight="1"
             android:id="@+id/reveal_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/black">
+            android:layout_height="300dp"
+            android:background="#000">
 
             <ImageView
                 android:id="@+id/background_image"
-                style="@style/DetailsBackgroundPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:tint="@color/background_photo_tint"
                 tools:ignore="ContentDescription"/>
 
             <ImageView
                 android:id="@+id/header_image"
-                style="@style/DetailsHeaderPhoto"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="start|bottom"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
+                android:scaleType="fitCenter"
+                android:tint="@color/main_photo_tint"
                 tools:ignore="ContentDescription"/>
-
         </FrameLayout>
 
         <LinearLayout
-            android:layout_weight="2"
             android:id="@+id/text_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:transitionGroup="true">
 
             <TextView
                 android:id="@+id/title"
-                style="@style/DetailsTextTitle"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:fontFamily="sans-serif-light"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"
+                android:textSize="40sp"/>
 
             <TextView
                 android:id="@+id/description"
-                style="@style/DetailsTextDescription"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="@string/lorem"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                android:textSize="20sp"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

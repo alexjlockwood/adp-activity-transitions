@@ -155,7 +155,6 @@ public class MainActivity extends Activity {
         }
 
         public void bind(int position) {
-            //mImage.setImageResource(RADIOHEAD_ALBUM_IDS[position]);
             Picasso.with(mImage.getContext()).load(Utils.RADIOHEAD_ALBUM_URLS[position]).into(mImage);
             mImage.setTransitionName(RADIOHEAD_ALBUM_NAMES[position]);
             mImage.setTag(RADIOHEAD_ALBUM_NAMES[position]);
