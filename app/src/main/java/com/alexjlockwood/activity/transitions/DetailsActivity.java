@@ -117,6 +117,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
             }
         });
 
+        enterTransition.setDuration(400);
         return enterTransition;
     }
 
@@ -138,6 +139,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         cardSlide.addTarget(rootView.findViewById(R.id.text_container));
         returnTransition.addTransition(cardSlide);
 
+        returnTransition.setDuration(400);
         return returnTransition;
     }
 
@@ -161,6 +163,8 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         pager.setAdapter(mAdapter);
         pager.setOnPageChangeListener(this);
         pager.setCurrentItem(mCurrentPosition);
+
+        getWindow().getSharedElementEnterTransition().setDuration(400);
     }
 
     @Override

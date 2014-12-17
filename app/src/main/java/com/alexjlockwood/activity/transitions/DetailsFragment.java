@@ -1,10 +1,8 @@
 package com.alexjlockwood.activity.transitions;
 
 import android.app.Fragment;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +19,6 @@ public class DetailsFragment extends Fragment {
     private static final boolean DEBUG = true;
 
     private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
-    private static final SparseArray<Bitmap> BITMAP_CACHE = new SparseArray<>();
 
     public static DetailsFragment newInstance(int position) {
         Bundle args = new Bundle();
@@ -42,7 +39,6 @@ public class DetailsFragment extends Fragment {
 
         int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
         headerImage.setTransitionName(RADIOHEAD_ALBUM_NAMES[selectedPosition]);
-        //headerImage.setImageResource(RADIOHEAD_ALBUM_IDS[selectedPosition]);
         Picasso.with(getActivity()).load(Utils.RADIOHEAD_ALBUM_URLS[selectedPosition]).fit().into(headerImage);
 
         titleText.setText(RADIOHEAD_ALBUM_NAMES[selectedPosition]);
