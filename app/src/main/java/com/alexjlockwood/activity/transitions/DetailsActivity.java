@@ -3,6 +3,7 @@ package com.alexjlockwood.activity.transitions;
 import android.app.Activity;
 import android.app.SharedElementCallback;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -108,16 +109,17 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         fade.excludeTarget(android.R.id.statusBarBackground, true);
         enterTransition.addTransition(fade);
 
+        final Resources res = getResources();
         final ImageView backgroundImage = (ImageView) rootView.findViewById(R.id.background_image);
         backgroundImage.setAlpha(0f);
         enterTransition.addListener(new TransitionListenerAdapter() {
             @Override
             public void onTransitionEnd(Transition transition) {
-                backgroundImage.animate().alpha(1f).setDuration(2000);
+                backgroundImage.animate().alpha(1f).setDuration(res.getInteger(R.integer.image_background_fade_millis));
             }
         });
 
-        enterTransition.setDuration(400);
+        enterTransition.setDuration(getResources().getInteger(R.integer.transition_duration_millis));
         return enterTransition;
     }
 
@@ -139,7 +141,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         cardSlide.addTarget(rootView.findViewById(R.id.text_container));
         returnTransition.addTransition(cardSlide);
 
-        returnTransition.setDuration(400);
+        returnTransition.setDuration(getResources().getInteger(R.integer.transition_duration_millis));
         return returnTransition;
     }
 
@@ -164,7 +166,7 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
         pager.setOnPageChangeListener(this);
         pager.setCurrentItem(mCurrentPosition);
 
-        getWindow().getSharedElementEnterTransition().setDuration(400);
+        getWindow().getSharedElementEnterTransition().setDuration(getResources().getInteger(R.integer.transition_duration_millis));
     }
 
     @Override
