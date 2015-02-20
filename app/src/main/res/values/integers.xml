@@ -2,5 +2,7 @@
 <resources>
 
     <integer name="num_columns">2</integer>
+    <integer name="image_background_fade_millis">1200</integer>
+    <integer name="transition_duration_millis">800</integer>
 
 </resources>
