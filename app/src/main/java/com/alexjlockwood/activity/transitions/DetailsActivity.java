@@ -42,9 +42,8 @@ public class DetailsActivity extends Activity implements ViewPager.OnPageChangeL
                 View sharedView = mAdapter.getCurrentDetailsFragment().getSharedElement();
                 if (sharedView == null) {
                     // If shared view is null, then it has likely been scrolled off screen and
-                    // recycled. In this case we cancel the shared element transition and use
-                    // a fallback window animation instead.
-                    // TODO: write a "split slide" return transition, similar to Newsstand?
+                    // recycled. In this case we cancel the shared element transition by
+                    // removing the shared elements from the shared elements map.
                     names.clear();
                     sharedElements.clear();
                 } else if (mCurrentPosition != mOriginalPosition) {
