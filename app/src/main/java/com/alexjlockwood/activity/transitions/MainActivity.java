@@ -58,13 +58,12 @@ public class MainActivity extends Activity {
                 mTmpState = null;
             }
 
-            View decor = getWindow().getDecorView();
-            View navigationBar = decor.findViewById(android.R.id.navigationBarBackground);
-            View statusBar = decor.findViewById(android.R.id.statusBarBackground);
-            int actionBarId = getResources().getIdentifier("action_bar_container", "id", "android");
-            View actionBar = decor.findViewById(actionBarId);
-
             if (!mIsReentering) {
+                View navigationBar = findViewById(android.R.id.navigationBarBackground);
+                View statusBar = findViewById(android.R.id.statusBarBackground);
+                int actionBarId = getResources().getIdentifier("action_bar_container", "id", "android");
+                View actionBar = findViewById(actionBarId);
+
                 if (navigationBar != null) {
                     names.add(navigationBar.getTransitionName());
                     sharedElements.put(navigationBar.getTransitionName(), navigationBar);
