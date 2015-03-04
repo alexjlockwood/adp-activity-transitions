@@ -23,6 +23,8 @@ public class DetailsActivity extends Activity {
         pager.setAdapter(new DetailsFragmentPagerAdapter(getFragmentManager()));
         int currentPosition = getIntent().getIntExtra(EXTRA_CURRENT_ALBUM_POSITION, 0);
         pager.setCurrentItem(currentPosition);
+
+        postponeEnterTransition();
     }
 
     private static class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {

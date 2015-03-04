@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,7 +33,7 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
 
-        ImageView albumImage = (ImageView) rootView.findViewById(R.id.details_album_image);
+        final ImageView albumImage = (ImageView) rootView.findViewById(R.id.details_album_image);
         ImageView backgroundImage = (ImageView) rootView.findViewById(R.id.details_background_image);
 
         View textContainer = rootView.findViewById(R.id.details_text_container);
@@ -48,6 +49,14 @@ public class DetailsFragment extends Fragment {
         albumTitleText.setText(albumName);
 
         albumImage.setTransitionName(albumName);
+        albumImage.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                albumImage.getViewTreeObserver().removeOnPreDrawListener(this);
+                getActivity().startPostponedEnterTransition();
+                return true;
+            }
+        });
 
         return rootView;
     }
