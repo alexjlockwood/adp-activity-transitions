@@ -8,6 +8,8 @@
     <style name="AppTheme.Details" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowEnterTransition">@transition/window_fade</item>
+        <item name="android:windowReturnTransition">@transition/window_fade</item>
     </style>
 
 </resources>
