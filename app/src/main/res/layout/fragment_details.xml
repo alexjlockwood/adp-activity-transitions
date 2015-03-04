@@ -12,7 +12,6 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:id="@+id/reveal_container"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:background="#000">
@@ -41,8 +40,7 @@
             android:id="@+id/text_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:transitionGroup="true">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/title"
