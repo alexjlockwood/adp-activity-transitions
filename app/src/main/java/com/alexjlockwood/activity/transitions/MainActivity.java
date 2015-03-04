@@ -1,6 +1,7 @@
 package com.alexjlockwood.activity.transitions;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import static com.alexjlockwood.activity.transitions.Constants.ALBUM_IMAGE_URLS;
+import static com.alexjlockwood.activity.transitions.Constants.ALBUM_NAMES;
 
 public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -66,6 +68,7 @@ public class MainActivity extends Activity {
 
         public void bind(int position) {
             Picasso.with(MainActivity.this).load(ALBUM_IMAGE_URLS[position]).into(mAlbumImage);
+            mAlbumImage.setTransitionName(ALBUM_NAMES[position]);
             mAlbumPosition = position;
         }
 
@@ -73,7 +76,8 @@ public class MainActivity extends Activity {
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
             intent.putExtra(EXTRA_CURRENT_ALBUM_POSITION, mAlbumPosition);
-            startActivity(intent);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this,
+                    mAlbumImage, mAlbumImage.getTransitionName()).toBundle());
         }
     }
 }
