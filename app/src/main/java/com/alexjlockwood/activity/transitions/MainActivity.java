@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    static final String EXTRA_CURRENT_ALBUM_POSITION = "extra_current_item_position";
+    static final String EXTRA_STARTING_ALBUM_POSITION = "extra_current_item_position";
 
     private RecyclerView mRecyclerView;
 
@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-            intent.putExtra(EXTRA_CURRENT_ALBUM_POSITION, mAlbumPosition);
+            intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, mAlbumPosition);
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this,
                     mAlbumImage, mAlbumImage.getTransitionName()).toBundle());
         }

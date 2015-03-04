@@ -19,11 +19,13 @@ public class DetailsFragment extends Fragment {
     private static final String TAG = DetailsFragment.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final String ARG_SELECTED_IMAGE_POSITION = "arg_selected_image_position";
+    private static final String ARG_ALBUM_IMAGE_POSITION = "arg_album_image_position";
+    private static final String ARG_STARTING_ALBUM_IMAGE_POSITION = "arg_starting_album_image_position";
 
-    public static DetailsFragment newInstance(int position) {
+    public static DetailsFragment newInstance(int position, int startingPosition) {
         Bundle args = new Bundle();
-        args.putInt(ARG_SELECTED_IMAGE_POSITION, position);
+        args.putInt(ARG_ALBUM_IMAGE_POSITION, position);
+        args.putInt(ARG_STARTING_ALBUM_IMAGE_POSITION, startingPosition);
         DetailsFragment fragment = new DetailsFragment();
         fragment.setArguments(args);
         return fragment;
@@ -39,24 +41,27 @@ public class DetailsFragment extends Fragment {
         View textContainer = rootView.findViewById(R.id.details_text_container);
         TextView albumTitleText = (TextView) textContainer.findViewById(R.id.details_album_title);
 
-        int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
-        String albumImageUrl = ALBUM_IMAGE_URLS[selectedPosition];
-        String backgroundImageUrl = BACKGROUND_IMAGE_URLS[selectedPosition];
-        String albumName = ALBUM_NAMES[selectedPosition];
+        int albumPosition = getArguments().getInt(ARG_ALBUM_IMAGE_POSITION);
+        String albumImageUrl = ALBUM_IMAGE_URLS[albumPosition];
+        String backgroundImageUrl = BACKGROUND_IMAGE_URLS[albumPosition];
+        String albumName = ALBUM_NAMES[albumPosition];
+        albumImage.setTransitionName(albumName);
 
         Picasso.with(getActivity()).load(albumImageUrl).fit().centerCrop().into(albumImage);
         Picasso.with(getActivity()).load(backgroundImageUrl).fit().centerCrop().into(backgroundImage);
         albumTitleText.setText(albumName);
 
-        albumImage.setTransitionName(albumName);
-        albumImage.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                albumImage.getViewTreeObserver().removeOnPreDrawListener(this);
-                getActivity().startPostponedEnterTransition();
-                return true;
-            }
-        });
+        int startingPosition = getArguments().getInt(ARG_STARTING_ALBUM_IMAGE_POSITION);
+        if (savedInstanceState == null && albumPosition == startingPosition) {
+            albumImage.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    albumImage.getViewTreeObserver().removeOnPreDrawListener(this);
+                    getActivity().startPostponedEnterTransition();
+                    return true;
+                }
+            });
+        }
 
         return rootView;
     }
