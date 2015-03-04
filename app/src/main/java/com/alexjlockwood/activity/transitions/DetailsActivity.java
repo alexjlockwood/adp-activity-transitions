@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
@@ -14,6 +15,9 @@ public class DetailsActivity extends Activity {
     private static final String TAG = DetailsActivity.class.getSimpleName();
     private static final boolean DEBUG = false;
 
+    private static final String STATE_CURRENT_PAGE_POSITION = "state_current_page_position";
+
+    private int mCurrentPosition;
     private int mStartingPosition;
 
     @Override
@@ -21,12 +25,29 @@ public class DetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        mStartingPosition = getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0);
+        if (savedInstanceState == null) {
+            postponeEnterTransition();
+            mCurrentPosition = mStartingPosition;
+        } else {
+            mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_PAGE_POSITION);
+        }
+
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new DetailsFragmentPagerAdapter(getFragmentManager()));
-        mStartingPosition = getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0);
-        pager.setCurrentItem(mStartingPosition);
+        pager.setCurrentItem(mCurrentPosition);
+        pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                mCurrentPosition = position;
+            }
+        });
+    }
 
-        postponeEnterTransition();
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_CURRENT_PAGE_POSITION, mCurrentPosition);
     }
 
     private class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {
