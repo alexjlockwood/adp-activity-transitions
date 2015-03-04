@@ -47,6 +47,8 @@ public class DetailsFragment extends Fragment {
         Picasso.with(getActivity()).load(backgroundImageUrl).fit().centerCrop().into(backgroundImage);
         albumTitleText.setText(albumName);
 
+        albumImage.setTransitionName(albumName);
+
         return rootView;
     }
 }
