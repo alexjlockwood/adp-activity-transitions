@@ -43,7 +43,7 @@ public class DetailsFragment extends Fragment {
         String backgroundImageUrl = BACKGROUND_IMAGE_URLS[selectedPosition];
         String albumName = ALBUM_NAMES[selectedPosition];
 
-        Picasso.with(getActivity()).load(albumImageUrl).fit().into(albumImage);
+        Picasso.with(getActivity()).load(albumImageUrl).fit().centerCrop().into(albumImage);
         Picasso.with(getActivity()).load(backgroundImageUrl).fit().centerCrop().into(backgroundImage);
         albumTitleText.setText(albumName);
 
