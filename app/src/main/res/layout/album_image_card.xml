@@ -11,7 +11,7 @@
     app:cardCornerRadius="4dp">
 
     <ImageView
-        android:id="@+id/album_image"
+        android:id="@+id/main_card_album_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"

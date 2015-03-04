@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import static com.alexjlockwood.activity.transitions.Constants.ALBUM_IMAGE_URLS;
 import static com.alexjlockwood.activity.transitions.Constants.ALBUM_NAMES;
+import static com.alexjlockwood.activity.transitions.Constants.BACKGROUND_IMAGE_URLS;
 
 public class DetailsFragment extends Fragment {
     private static final String TAG = DetailsFragment.class.getSimpleName();
@@ -28,15 +30,23 @@ public class DetailsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_details, container, false);
-        ImageView headerImage = (ImageView) root.findViewById(R.id.header_image);
-        View infoText = root.findViewById(R.id.text_container);
-        TextView titleText = (TextView) infoText.findViewById(R.id.title);
-        ImageView backgroundImage = (ImageView) root.findViewById(R.id.background_image);
+        View rootView = inflater.inflate(R.layout.fragment_details, container, false);
+
+        ImageView albumImage = (ImageView) rootView.findViewById(R.id.details_album_image);
+        ImageView backgroundImage = (ImageView) rootView.findViewById(R.id.details_background_image);
+
+        View textContainer = rootView.findViewById(R.id.details_text_container);
+        TextView albumTitleText = (TextView) textContainer.findViewById(R.id.details_album_title);
+
         int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
-        Picasso.with(getActivity()).load(Constants.ALBUM_IMAGE_URLS[selectedPosition]).fit().into(headerImage);
-        titleText.setText(ALBUM_NAMES[selectedPosition]);
-        Picasso.with(getActivity()).load(Constants.BACKGROUND_IMAGE_URLS[selectedPosition]).fit().centerCrop().into(backgroundImage);
-        return root;
+        String albumImageUrl = ALBUM_IMAGE_URLS[selectedPosition];
+        String backgroundImageUrl = BACKGROUND_IMAGE_URLS[selectedPosition];
+        String albumName = ALBUM_NAMES[selectedPosition];
+
+        Picasso.with(getActivity()).load(albumImageUrl).fit().into(albumImage);
+        Picasso.with(getActivity()).load(backgroundImageUrl).fit().centerCrop().into(backgroundImage);
+        albumTitleText.setText(albumName);
+
+        return rootView;
     }
 }

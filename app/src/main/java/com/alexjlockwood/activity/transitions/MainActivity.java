@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
         public CardHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            mAlbumImage = (ImageView) itemView.findViewById(R.id.album_image);
+            mAlbumImage = (ImageView) itemView.findViewById(R.id.main_card_album_image);
         }
 
         public void bind(int position) {
