@@ -29,11 +29,10 @@ public class DetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_details, container, false);
-        View revealContainer = root.findViewById(R.id.reveal_container);
-        ImageView headerImage = (ImageView) revealContainer.findViewById(R.id.header_image);
+        ImageView headerImage = (ImageView) root.findViewById(R.id.header_image);
         View infoText = root.findViewById(R.id.text_container);
         TextView titleText = (TextView) infoText.findViewById(R.id.title);
-        ImageView backgroundImage = (ImageView) revealContainer.findViewById(R.id.background_image);
+        ImageView backgroundImage = (ImageView) root.findViewById(R.id.background_image);
         int selectedPosition = getArguments().getInt(ARG_SELECTED_IMAGE_POSITION);
         Picasso.with(getActivity()).load(Constants.ALBUM_IMAGE_URLS[selectedPosition]).fit().into(headerImage);
         titleText.setText(ALBUM_NAMES[selectedPosition]);
