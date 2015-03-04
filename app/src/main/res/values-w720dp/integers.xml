@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="num_columns">3</integer>
+    <integer name="activity_main_num_grid_columns">3</integer>
 
 </resources>

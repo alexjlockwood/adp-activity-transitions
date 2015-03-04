@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:tint="@color/background_photo_tint"
+                android:tint="@color/background_image_photo_tint"
                 tools:ignore="ContentDescription"/>
 
             <ImageView
@@ -33,7 +33,7 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginStart="16dp"
                 android:scaleType="fitCenter"
-                android:tint="@color/main_photo_tint"
+                android:tint="@color/album_image_photo_tint"
                 tools:ignore="ContentDescription"/>
         </FrameLayout>
 
