@@ -117,11 +117,11 @@ public class DetailsFragment extends Fragment {
 
     /**
      * Returns the shared element that should be transitioned back to the previous Activity,
-     * or null if the view is not visible on screen.
+     * or null if the view is not visible on the screen.
      */
     @Nullable
     ImageView getAlbumImage() {
-        if (isViewInBounds(getView().findViewById(R.id.scroll_view), mAlbumImage)) {
+        if (isViewInBounds(getActivity().getWindow().getDecorView(), mAlbumImage)) {
             return mAlbumImage;
         }
         return null;

@@ -1,6 +1,4 @@
-<ScrollView
-    android:id="@+id/scroll_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -23,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:tint="@color/background_image_photo_tint"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/details_album_image"
@@ -33,7 +31,7 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginStart="16dp"
                 android:tint="@color/album_image_photo_tint"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
         </FrameLayout>
 
         <LinearLayout
@@ -50,7 +48,7 @@
                 android:layout_margin="24dp"
                 android:fontFamily="sans-serif-light"
                 android:textAppearance="@android:style/TextAppearance.Material.Title"
-                android:textSize="40sp"/>
+                android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/details_album_description"
@@ -63,7 +61,7 @@
                 android:lineSpacingMultiplier="1.2"
                 android:text="@string/lorem"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

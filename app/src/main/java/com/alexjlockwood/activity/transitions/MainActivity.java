@@ -38,9 +38,9 @@ public class MainActivity extends Activity {
                 int startingPosition = mTmpReenterState.getInt(EXTRA_STARTING_ALBUM_POSITION);
                 int currentPosition = mTmpReenterState.getInt(EXTRA_CURRENT_ALBUM_POSITION);
                 if (startingPosition != currentPosition) {
-                    // If currentPosition != oldPosition the user must have swiped to a different
-                    // page in the DetailsActivity. We must update the shared element so that the
-                    // correct one falls into place.
+                    // If startingPosition != currentPosition the user must have swiped to a
+                    // different page in the DetailsActivity. We must update the shared element
+                    // so that the correct one falls into place.
                     String newTransitionName = ALBUM_NAMES[currentPosition];
                     View newSharedElement = mRecyclerView.findViewWithTag(newTransitionName);
                     if (newSharedElement != null) {
@@ -53,6 +53,7 @@ public class MainActivity extends Activity {
 
                 mTmpReenterState = null;
             } else {
+                // If mTmpReenterState is null, then the activity is exiting.
                 View navigationBar = findViewById(android.R.id.navigationBarBackground);
                 View statusBar = findViewById(android.R.id.statusBarBackground);
                 if (navigationBar != null) {
