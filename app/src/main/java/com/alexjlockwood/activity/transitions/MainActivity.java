@@ -144,6 +144,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onClick(View v) {
+            // TODO: is there a way to prevent user from double clicking and starting activity twice?
             Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
             intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, mAlbumPosition);
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this,
