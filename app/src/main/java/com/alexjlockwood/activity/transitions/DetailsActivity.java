@@ -30,12 +30,18 @@ public class DetailsActivity extends Activity {
         @Override
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
             if (mIsReturning) {
-                if (mStartingPosition != mCurrentPosition) {
-                    ImageView newSharedElement = mCurrentDetailsFragment.getAlbumImage();
+                ImageView sharedElement = mCurrentDetailsFragment.getAlbumImage();
+                if (sharedElement == null) {
+                    // If shared view is null, then it has likely been scrolled off screen and
+                    // recycled. In this case we cancel the shared element transition by
+                    // removing the shared elements from the shared elements map.
                     names.clear();
-                    names.add(newSharedElement.getTransitionName());
                     sharedElements.clear();
-                    sharedElements.put(newSharedElement.getTransitionName(), newSharedElement);
+                } else if (mStartingPosition != mCurrentPosition) {
+                    names.clear();
+                    names.add(sharedElement.getTransitionName());
+                    sharedElements.clear();
+                    sharedElements.put(sharedElement.getTransitionName(), sharedElement);
                 }
             }
         }

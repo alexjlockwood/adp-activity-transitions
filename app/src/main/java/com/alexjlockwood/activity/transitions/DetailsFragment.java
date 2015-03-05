@@ -1,7 +1,10 @@
 package com.alexjlockwood.activity.transitions;
 
 import android.app.Fragment;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,7 +115,24 @@ public class DetailsFragment extends Fragment {
         }
     }
 
+    /**
+     * Returns the shared element that should be transitioned back to the previous Activity,
+     * or null if the view is not visible on screen.
+     */
+    @Nullable
     ImageView getAlbumImage() {
-        return mAlbumImage;
+        if (isViewInBounds(getView().findViewById(R.id.scroll_view), mAlbumImage)) {
+            return mAlbumImage;
+        }
+        return null;
+    }
+
+    /**
+     * Returns true if {@param view} is contained within {@param container}'s bounds.
+     */
+    private static boolean isViewInBounds(@NonNull View container, @NonNull View view) {
+        Rect containerBounds = new Rect();
+        container.getHitRect(containerBounds);
+        return view.getLocalVisibleRect(containerBounds);
     }
 }
