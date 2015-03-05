@@ -12,15 +12,16 @@
         android:orientation="vertical">
 
         <FrameLayout
+            android:id="@+id/details_header_container"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:background="#000">
+            android:background="#000"
+            android:transitionGroup="true">
 
             <ImageView
                 android:id="@+id/details_background_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
                 android:tint="@color/background_image_photo_tint"
                 tools:ignore="ContentDescription"/>
 
@@ -31,7 +32,6 @@
                 android:layout_gravity="start|bottom"
                 android:layout_marginBottom="16dp"
                 android:layout_marginStart="16dp"
-                android:scaleType="fitCenter"
                 android:tint="@color/album_image_photo_tint"
                 tools:ignore="ContentDescription"/>
         </FrameLayout>
@@ -40,7 +40,8 @@
             android:id="@+id/details_text_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:transitionGroup="true">
 
             <TextView
                 android:id="@+id/details_album_title"

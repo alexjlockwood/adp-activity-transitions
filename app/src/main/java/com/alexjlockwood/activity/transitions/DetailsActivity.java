@@ -3,13 +3,22 @@ package com.alexjlockwood.activity.transitions;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.SharedElementCallback;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import static com.alexjlockwood.activity.transitions.MainActivity.EXTRA_STARTING_ALBUM_POSITION;
+import java.util.List;
+import java.util.Map;
+
 import static com.alexjlockwood.activity.transitions.Constants.ALBUM_IMAGE_URLS;
+import static com.alexjlockwood.activity.transitions.MainActivity.EXTRA_CURRENT_ALBUM_POSITION;
+import static com.alexjlockwood.activity.transitions.MainActivity.EXTRA_STARTING_ALBUM_POSITION;
 
 public class DetailsActivity extends Activity {
     private static final String TAG = DetailsActivity.class.getSimpleName();
@@ -17,23 +26,42 @@ public class DetailsActivity extends Activity {
 
     private static final String STATE_CURRENT_PAGE_POSITION = "state_current_page_position";
 
+    private final SharedElementCallback mCallback = new SharedElementCallback() {
+        @Override
+        public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+            if (mIsReturning) {
+                if (mStartingPosition != mCurrentPosition) {
+                    ImageView newSharedElement = mCurrentDetailsFragment.getAlbumImage();
+                    names.clear();
+                    names.add(newSharedElement.getTransitionName());
+                    sharedElements.clear();
+                    sharedElements.put(newSharedElement.getTransitionName(), newSharedElement);
+                }
+            }
+        }
+    };
+
+    private DetailsFragment mCurrentDetailsFragment;
     private int mCurrentPosition;
     private int mStartingPosition;
+    private boolean mIsReturning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+        postponeEnterTransition();
+        setEnterSharedElementCallback(mCallback);
 
         mStartingPosition = getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0);
         if (savedInstanceState == null) {
-            postponeEnterTransition();
             mCurrentPosition = mStartingPosition;
         } else {
             mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_PAGE_POSITION);
         }
 
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
+
         pager.setAdapter(new DetailsFragmentPagerAdapter(getFragmentManager()));
         pager.setCurrentItem(mCurrentPosition);
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -50,6 +78,16 @@ public class DetailsActivity extends Activity {
         outState.putInt(STATE_CURRENT_PAGE_POSITION, mCurrentPosition);
     }
 
+    @Override
+    public void finishAfterTransition() {
+        mIsReturning = true;
+        Intent data = new Intent();
+        data.putExtra(EXTRA_STARTING_ALBUM_POSITION, getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0));
+        data.putExtra(EXTRA_CURRENT_ALBUM_POSITION, mCurrentPosition);
+        setResult(RESULT_OK, data);
+        super.finishAfterTransition();
+    }
+
     private class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {
         public DetailsFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -58,6 +96,12 @@ public class DetailsActivity extends Activity {
         @Override
         public Fragment getItem(int position) {
             return DetailsFragment.newInstance(position, mStartingPosition);
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            super.setPrimaryItem(container, position, object);
+            mCurrentDetailsFragment = (DetailsFragment) object;
         }
 
         @Override
