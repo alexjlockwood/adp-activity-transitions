@@ -68,7 +68,6 @@ public class MainActivity extends Activity {
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +94,7 @@ public class MainActivity extends Activity {
             @Override
             public boolean onPreDraw() {
                 mRecyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-                // TODO: figure out why it is necessary to request layout to get a smooth transition.
+                // TODO: figure out why it is necessary to request layout here in order to get a smooth transition.
                 mRecyclerView.requestLayout();
                 startPostponedEnterTransition();
                 return true;

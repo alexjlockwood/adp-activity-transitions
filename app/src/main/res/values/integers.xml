@@ -2,5 +2,6 @@
 <resources>
 
     <integer name="activity_main_num_grid_columns">2</integer>
+    <integer name="fragment_details_background_image_fade_millis">1000</integer>
 
 </resources>

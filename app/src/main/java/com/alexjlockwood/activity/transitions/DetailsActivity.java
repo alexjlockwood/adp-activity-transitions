@@ -32,12 +32,15 @@ public class DetailsActivity extends Activity {
             if (mIsReturning) {
                 ImageView sharedElement = mCurrentDetailsFragment.getAlbumImage();
                 if (sharedElement == null) {
-                    // If shared view is null, then it has likely been scrolled off screen and
-                    // recycled. In this case we cancel the shared element transition by
-                    // removing the shared elements from the shared elements map.
+                    // If shared element is null, then it has been scrolled off screen and
+                    // no longer visible. In this case we cancel the shared element transition by
+                    // removing the shared element from the shared elements map.
                     names.clear();
                     sharedElements.clear();
                 } else if (mStartingPosition != mCurrentPosition) {
+                    // If the user has swiped to a different ViewPager page, then we need to
+                    // remove the old shared element and replace it with the new shared element
+                    // that should be transitioned instead.
                     names.clear();
                     names.add(sharedElement.getTransitionName());
                     sharedElements.clear();
@@ -67,7 +70,6 @@ public class DetailsActivity extends Activity {
         }
 
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
-
         pager.setAdapter(new DetailsFragmentPagerAdapter(getFragmentManager()));
         pager.setCurrentItem(mCurrentPosition);
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {

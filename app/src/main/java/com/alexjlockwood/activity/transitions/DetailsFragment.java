@@ -28,9 +28,7 @@ public class DetailsFragment extends Fragment {
     private static final String ARG_ALBUM_IMAGE_POSITION = "arg_album_image_position";
     private static final String ARG_STARTING_ALBUM_IMAGE_POSITION = "arg_starting_album_image_position";
 
-    private static final long BACKGROUND_IMAGE_FADE_MILLIS = 1000;
-
-    private final Callback mCallback = new Callback() {
+    private final Callback mImageCallback = new Callback() {
         @Override
         public void onSuccess() {
             startPostponedEnterTransition();
@@ -46,6 +44,7 @@ public class DetailsFragment extends Fragment {
     private int mStartingPosition;
     private int mAlbumPosition;
     private boolean mIsTransitioning;
+    private long mBackgroundImageFadeMillis;
 
     public static DetailsFragment newInstance(int position, int startingPosition) {
         Bundle args = new Bundle();
@@ -62,6 +61,8 @@ public class DetailsFragment extends Fragment {
         mStartingPosition = getArguments().getInt(ARG_STARTING_ALBUM_IMAGE_POSITION);
         mAlbumPosition = getArguments().getInt(ARG_ALBUM_IMAGE_POSITION);
         mIsTransitioning = savedInstanceState == null && mStartingPosition == mAlbumPosition;
+        mBackgroundImageFadeMillis = getResources().getInteger(
+                R.integer.fragment_details_background_image_fade_millis);
     }
 
     @Override
@@ -91,12 +92,12 @@ public class DetailsFragment extends Fragment {
             getActivity().getWindow().getSharedElementEnterTransition().addListener(new TransitionListenerAdapter() {
                 @Override
                 public void onTransitionEnd(Transition transition) {
-                    backgroundImage.animate().setDuration(BACKGROUND_IMAGE_FADE_MILLIS).alpha(1f);
+                    backgroundImage.animate().setDuration(mBackgroundImageFadeMillis).alpha(1f);
                 }
             });
         }
 
-        albumImageRequest.into(mAlbumImage, mCallback);
+        albumImageRequest.into(mAlbumImage, mImageCallback);
         backgroundImageRequest.into(backgroundImage);
 
         return rootView;
