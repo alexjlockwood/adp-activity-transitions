@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
 
     private RecyclerView mRecyclerView;
     private Bundle mTmpReenterState;
+    private boolean mIsDetailsActivityStarted;
 
     private final SharedElementCallback mCallback = new SharedElementCallback() {
         @Override
@@ -78,6 +79,12 @@ public class MainActivity extends Activity {
         mRecyclerView.setLayoutManager(new GridLayoutManager(this,
                 getResources().getInteger(R.integer.activity_main_num_grid_columns)));
         mRecyclerView.setAdapter(new CardAdapter());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mIsDetailsActivityStarted = false;
     }
 
     @Override
@@ -147,8 +154,12 @@ public class MainActivity extends Activity {
             // TODO: is there a way to prevent user from double clicking and starting activity twice?
             Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
             intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, mAlbumPosition);
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this,
-                    mAlbumImage, mAlbumImage.getTransitionName()).toBundle());
+
+            if (!mIsDetailsActivityStarted) {
+                mIsDetailsActivityStarted = true;
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this,
+                        mAlbumImage, mAlbumImage.getTransitionName()).toBundle());
+            }
         }
     }
 }
