@@ -72,7 +72,7 @@ public class DetailsActivity extends Activity {
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new DetailsFragmentPagerAdapter(getFragmentManager()));
         pager.setCurrentItem(mCurrentPosition);
-        pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 mCurrentPosition = position;

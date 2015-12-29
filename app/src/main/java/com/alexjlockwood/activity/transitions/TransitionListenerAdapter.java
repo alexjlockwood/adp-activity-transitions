@@ -2,7 +2,7 @@ package com.alexjlockwood.activity.transitions;
 
 import android.transition.Transition;
 
-public class TransitionListenerAdapter implements Transition.TransitionListener {
+class TransitionListenerAdapter implements Transition.TransitionListener {
     @Override
     public void onTransitionStart(Transition transition) {
     }

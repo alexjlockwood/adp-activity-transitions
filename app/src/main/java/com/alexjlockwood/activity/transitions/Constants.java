@@ -1,6 +1,6 @@
 package com.alexjlockwood.activity.transitions;
 
-public final class Constants {
+final class Constants {
 
     public static final String[] ALBUM_IMAGE_URLS = {
             "http://i.imgur.com/TaFnVAP.jpg",
