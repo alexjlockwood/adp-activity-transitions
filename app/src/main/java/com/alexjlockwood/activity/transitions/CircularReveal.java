@@ -8,7 +8,6 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.transition.TransitionValues;
 import android.transition.Visibility;
-import android.util.FloatMath;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -73,7 +72,7 @@ public class CircularReveal extends Visibility {
     }
 
     private Animator revealAnimator(View view, int width, int height, boolean isExpanding) {
-        float fullRadius = FloatMath.sqrt(width * width / 4f + height * height / 4f);
+        float fullRadius = (float) Math.sqrt(width * width / 4f + height * height / 4f);
         float endRadius = isExpanding ? fullRadius : 0f;
         float startRadius = isExpanding ? 0f : fullRadius;
         Animator animator = ViewAnimationUtils.createCircularReveal(view, width / 2, height / 2, startRadius, endRadius);
